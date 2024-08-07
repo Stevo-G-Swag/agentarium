@@ -37,6 +37,7 @@ const Index = () => {
     setIsLoading(true);
     setError(null);
     try {
+      console.log('Starting handleSubmit with:', { name, description });
       const updateCallback = (component, status) => {
         setActiveComponent(component);
         setCurrentStatus(status);
@@ -50,6 +51,10 @@ const Index = () => {
         errorMessage = err.message || errorMessage;
         if (err.stack) {
           console.error('Error stack:', err.stack);
+        }
+        // Check if err has a 'frame' property before accessing it
+        if (err.frame) {
+          console.error('Error frame:', err.frame);
         }
       }
       setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);

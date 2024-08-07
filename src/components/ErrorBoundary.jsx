@@ -20,6 +20,10 @@ class ErrorBoundary extends React.Component {
         console.error('Error stack:', error.stack);
       }
     }
+    // Check if error has a 'frame' property before accessing it
+    if (error && error.frame) {
+      console.error('Error frame:', error.frame);
+    }
     toast.error(errorMessage);
   }
 
