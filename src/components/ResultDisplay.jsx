@@ -1,10 +1,14 @@
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 const ResultDisplay = ({ result }) => {
   return (
     <div className="w-full">
       <h3 className="text-lg font-semibold mb-2">Result:</h3>
-      <pre className="bg-gray-200 p-4 rounded-md overflow-x-auto">
-        {result}
-      </pre>
+      <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+        <pre className="text-sm">
+          {result}
+        </pre>
+      </ScrollArea>
     </div>
   );
 };
