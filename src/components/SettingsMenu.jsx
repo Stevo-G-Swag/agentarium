@@ -11,9 +11,12 @@ const SettingsMenu = ({ onSave }) => {
   const [models, setModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
 
   useEffect(() => {
     const fetchModels = async () => {
+      if (!apiKey) return;
+      setIsLoadingModels(true);
       try {
         const response = await fetch('https://api.openai.com/v1/models', {
           headers: {
@@ -21,15 +24,16 @@ const SettingsMenu = ({ onSave }) => {
           }
         });
         const data = await response.json();
-        setModels(data.data);
+        setModels(data.data || []);
       } catch (error) {
         console.error('Error fetching models:', error);
+        setModels([]);
+      } finally {
+        setIsLoadingModels(false);
       }
     };
 
-    if (apiKey) {
-      fetchModels();
-    }
+    fetchModels();
   }, [apiKey]);
 
   const handleSave = () => {
@@ -62,12 +66,18 @@ const SettingsMenu = ({ onSave }) => {
         <Label htmlFor="model">Model</Label>
         <Select onValueChange={setSelectedModel} value={selectedModel}>
           <SelectTrigger>
-            <SelectValue placeholder="Select a model" />
+            <SelectValue placeholder={isLoadingModels ? "Loading models..." : "Select a model"} />
           </SelectTrigger>
           <SelectContent>
-            {models.map((model) => (
-              <SelectItem key={model.id} value={model.id}>{model.id}</SelectItem>
-            ))}
+            {isLoadingModels ? (
+              <SelectItem value="loading" disabled>Loading models...</SelectItem>
+            ) : models.length > 0 ? (
+              models.map((model) => (
+                <SelectItem key={model.id} value={model.id}>{model.id}</SelectItem>
+              ))
+            ) : (
+              <SelectItem value="no-models" disabled>No models available</SelectItem>
+            )}
           </SelectContent>
         </Select>
       </div>
