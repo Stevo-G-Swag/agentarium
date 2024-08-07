@@ -9,13 +9,11 @@ const BrowserPreview = ({ codebase }) => {
         <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
         <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
         <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-        <div className="flex-grow bg-white rounded px-2 py-1 text-sm">localhost:3000</div>
+        <div className="flex-grow bg-white rounded px-2 py-1 text-sm">Preview</div>
       </div>
-      <iframe
-        srcDoc={htmlContent}
-        title="Browser Preview"
-        className="w-full h-full border-none"
-        sandbox="allow-scripts"
+      <div
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+        className="w-full h-full border-none overflow-auto"
       />
     </div>
   );

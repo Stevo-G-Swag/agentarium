@@ -14,7 +14,12 @@ class TechLeadAgent {
         ],
       });
       const content = response.choices[0].message.content;
-      return JSON.parse(content);
+      try {
+        return JSON.parse(content);
+      } catch (parseError) {
+        console.error('Error parsing JSON:', parseError);
+        return [{ name: 'Error', description: 'Failed to parse tasks. Please try again.' }];
+      }
     } catch (error) {
       console.error('Error in createTasks:', error);
       return [{ name: 'Error', description: 'Failed to create tasks. Please try again.' }];
