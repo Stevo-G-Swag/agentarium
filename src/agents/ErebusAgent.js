@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import * as agents from './agents';
+import * as agents from '.';
 import * as tools from '../tools';
 
 export class ErebusAgent {
