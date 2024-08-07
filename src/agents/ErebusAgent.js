@@ -1,53 +1,25 @@
 import OpenAI from 'openai';
+import fs from 'fs';
+import path from 'path';
 
 class AgentCore {
-  perceive(input) {
-    return `Analyzed input: ${input}`;
-  }
-
-  selectAction(reasoning) {
-    const actions = ['code', 'explain', 'refactor', 'optimize'];
-    return actions[Math.floor(Math.random() * actions.length)];
-  }
+  // ... (keep existing code)
 }
 
 class DRLModule {
-  constructor() {
-    this.learningRate = 0.01;
-    this.discountFactor = 0.99;
-  }
-
-  learn(action, perception) {
-    // Simplified Q-learning update
-    const reward = Math.random(); // Simulated reward
-    const oldValue = Math.random(); // Simulated old Q-value
-    const newValue = (1 - this.learningRate) * oldValue + this.learningRate * (reward + this.discountFactor * Math.max(...[Math.random(), Math.random()]));
-    return `Updated Q-value for action ${action}: ${newValue.toFixed(2)}`;
-  }
+  // ... (keep existing code)
 }
 
 class MASModule {
-  interact(action) {
-    const agents = ['CodeAnalyzer', 'BugFinder', 'Optimizer'];
-    const selectedAgent = agents[Math.floor(Math.random() * agents.length)];
-    return `${selectedAgent} agent performed ${action}`;
-  }
+  // ... (keep existing code)
 }
 
 class CognitiveArchitecture {
-  reason(perception) {
-    const concepts = ['variables', 'functions', 'classes', 'algorithms'];
-    const selectedConcept = concepts[Math.floor(Math.random() * concepts.length)];
-    return `Analyzed ${selectedConcept} in the given input`;
-  }
+  // ... (keep existing code)
 }
 
 class ACIInterface {
-  execute(interaction) {
-    const tools = ['compiler', 'debugger', 'profiler', 'code formatter'];
-    const selectedTool = tools[Math.floor(Math.random() * tools.length)];
-    return `Used ${selectedTool} to process: ${interaction}`;
-  }
+  // ... (keep existing code)
 }
 
 import ProductOwnerAgent from './ProductOwnerAgent';
@@ -78,29 +50,53 @@ export class ErebusAgent {
       debugger: new DebuggerAgent(this.openai, this.model),
       technicalWriter: new TechnicalWriterAgent(this.openai, this.model),
     };
+    this.prompts = this.loadPrompts();
   }
 
-  async process(appName, description) {
+  loadPrompts() {
+    const promptsDir = path.join(__dirname, 'prompts');
+    const prompts = {};
+    fs.readdirSync(promptsDir).forEach(file => {
+      const promptName = path.basename(file, '.prompt');
+      prompts[promptName] = fs.readFileSync(path.join(promptsDir, file), 'utf-8');
+    });
+    return prompts;
+  }
+
+  async process(appName, description, updateCallback) {
     try {
-      const specification = await this.agents.specificationWriter.writeSpecification(description);
-      const architecture = await this.agents.architect.designArchitecture(specification);
-      const tasks = await this.agents.techLead.createTasks(architecture);
+      updateCallback('specification', 'Writing specification...');
+      const specification = await this.agents.specificationWriter.writeSpecification(description, this.prompts.specification_writer);
+      
+      updateCallback('architecture', 'Designing architecture...');
+      const architecture = await this.agents.architect.designArchitecture(specification, this.prompts.architect);
+      
+      updateCallback('tasks', 'Creating tasks...');
+      const tasks = await this.agents.techLead.createTasks(architecture, this.prompts.tech_lead);
       
       for (const task of tasks) {
-        let taskImplementation = await this.agents.developer.describeImplementation(task);
-        let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase);
-        let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges);
+        updateCallback('development', `Implementing task: ${task.name}...`);
+        let taskImplementation = await this.agents.developer.describeImplementation(task, this.prompts.developer);
+        
+        updateCallback('coding', 'Writing code...');
+        let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase, this.prompts.code_monkey);
+        
+        updateCallback('review', 'Reviewing changes...');
+        let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
         
         while (!reviewResult.approved) {
-          codeChanges = await this.agents.codeMonkey.implementChanges(reviewResult.feedback, this.codebase);
-          reviewResult = await this.agents.reviewer.reviewChanges(codeChanges);
+          updateCallback('revision', 'Revising code...');
+          codeChanges = await this.agents.codeMonkey.implementChanges(reviewResult.feedback, this.codebase, this.prompts.code_monkey);
+          reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
         }
         
         this.updateCodebase(codeChanges);
       }
       
-      const documentation = await this.agents.technicalWriter.writeDocumentation(this.codebase);
+      updateCallback('documentation', 'Writing documentation...');
+      const documentation = await this.agents.technicalWriter.writeDocumentation(this.codebase, this.prompts.technical_writer);
       
+      updateCallback('complete', 'Project completed!');
       return {
         appName,
         specification,
@@ -110,7 +106,8 @@ export class ErebusAgent {
       };
     } catch (error) {
       console.error('Error processing app creation:', error);
-      return this.agents.troubleshooter.provideFeedback(error);
+      updateCallback('error', 'An error occurred. Troubleshooting...');
+      return this.agents.troubleshooter.provideFeedback(error, this.prompts.troubleshooter);
     }
   }
 

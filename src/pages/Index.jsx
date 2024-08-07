@@ -11,17 +11,17 @@ const Index = () => {
   const [settings, setSettings] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
   const [erebusAgent, setErebusAgent] = useState(null);
+  const [codebase, setCodebase] = useState({});
+  const [appName, setAppName] = useState('');
+  const [appDescription, setAppDescription] = useState('');
+  const [activeComponent, setActiveComponent] = useState('codeEditor');
+  const [currentStatus, setCurrentStatus] = useState('');
 
   useEffect(() => {
     if (settings) {
       setErebusAgent(new ErebusAgent(settings.apiKey, settings.model));
     }
   }, [settings]);
-
-  const [codebase, setCodebase] = useState({});
-
-  const [appName, setAppName] = useState('');
-  const [appDescription, setAppDescription] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +32,11 @@ const Index = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const agentResult = await erebusAgent.process(appName, appDescription);
+      const updateCallback = (component, status) => {
+        setActiveComponent(component);
+        setCurrentStatus(status);
+      };
+      const agentResult = await erebusAgent.process(appName, appDescription, updateCallback);
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase);
     } catch (err) {
@@ -62,6 +66,8 @@ const Index = () => {
           setAppName={setAppName}
           appDescription={appDescription}
           setAppDescription={setAppDescription}
+          activeComponent={activeComponent}
+          currentStatus={currentStatus}
         />
       )}
       <button

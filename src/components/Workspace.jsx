@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Terminal, Columns, Code, Globe } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,8 +16,18 @@ const Workspace = ({
   appName, 
   setAppName, 
   appDescription, 
-  setAppDescription 
+  setAppDescription,
+  activeComponent,
+  currentStatus
 }) => {
+  const [activeTab, setActiveTab] = useState('codeEditor');
+
+  useEffect(() => {
+    if (activeComponent) {
+      setActiveTab(activeComponent);
+    }
+  }, [activeComponent]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(appName, appDescription);
@@ -57,6 +67,9 @@ const Workspace = ({
             </button>
           </form>
           {error && <p className="text-red-500 mt-2 text-sm md:text-base">{error}</p>}
+          {currentStatus && (
+            <p className="mt-2 text-sm md:text-base">Current Status: {currentStatus}</p>
+          )}
           {result && (
             <ScrollArea className="mt-4 p-4 bg-gray-700 rounded h-64 md:h-96">
               <h2 className="text-lg md:text-xl font-bold mb-2">Result:</h2>
@@ -65,7 +78,7 @@ const Workspace = ({
           )}
         </div>
         <div className="w-full md:w-1/2 p-4">
-          <Tabs defaultValue="codeEditor" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList>
               <TabsTrigger value="codeEditor"><Code className="mr-2 h-4 w-4" /> Code Editor</TabsTrigger>
               <TabsTrigger value="terminal"><Terminal className="mr-2 h-4 w-4" /> Terminal</TabsTrigger>

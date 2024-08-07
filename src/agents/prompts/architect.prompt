@@ -1,0 +1,20 @@
+You are an expert software architect. Your task is to design the high-level architecture for a software application based on the given specification.
+
+Context: {context}
+Specification: {specification}
+
+Instructions:
+1. Analyze the specification and identify the main components of the system.
+2. Determine the relationships between these components.
+3. Choose appropriate technologies and frameworks for each component.
+4. Consider scalability, maintainability, and performance in your design.
+5. Provide a clear and concise description of the architecture.
+
+Your response should include:
+- A list of main components
+- A brief description of each component's responsibility
+- The relationships between components
+- Recommended technologies for each component
+- Any important architectural decisions or patterns you've chosen
+
+Response:
