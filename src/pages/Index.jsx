@@ -23,8 +23,7 @@ const Index = () => {
     }
   }, [settings]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (name, description) => {
     if (!erebusAgent) {
       setError('Please configure the settings first.');
       return;
@@ -36,11 +35,12 @@ const Index = () => {
         setActiveComponent(component);
         setCurrentStatus(status);
       };
-      const agentResult = await erebusAgent.process(appName, appDescription, updateCallback);
+      const agentResult = await erebusAgent.process(name, description, updateCallback);
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase);
     } catch (err) {
       setError('An error occurred while processing your request. Please try again.');
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
