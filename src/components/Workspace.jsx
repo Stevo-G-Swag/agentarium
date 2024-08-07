@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Terminal, Columns, Code, Globe } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CodeEditor from './CodeEditor';
+import TerminalComponent from './TerminalComponent';
+import Planner from './Planner';
+import BrowserPreview from './BrowserPreview';
 
-const Workspace = ({ onSubmit, isLoading, error, result }) => {
+const Workspace = ({ onSubmit, isLoading, error, result, codebase }) => {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e) => {
@@ -45,23 +50,26 @@ const Workspace = ({ onSubmit, isLoading, error, result }) => {
           )}
         </div>
         <div className="w-full md:w-1/2 p-4">
-          <div className="flex flex-wrap gap-2 mb-4">
-            <button className="flex items-center px-2 py-1 md:px-4 md:py-2 bg-gray-700 rounded hover:bg-gray-600 text-xs md:text-sm">
-              <Terminal className="mr-1 md:mr-2 h-4 w-4" /> Terminal
-            </button>
-            <button className="flex items-center px-2 py-1 md:px-4 md:py-2 bg-gray-700 rounded hover:bg-gray-600 text-xs md:text-sm">
-              <Columns className="mr-1 md:mr-2 h-4 w-4" /> Planner
-            </button>
-            <button className="flex items-center px-2 py-1 md:px-4 md:py-2 bg-gray-700 rounded hover:bg-gray-600 text-xs md:text-sm">
-              <Code className="mr-1 md:mr-2 h-4 w-4" /> Code Editor
-            </button>
-            <button className="flex items-center px-2 py-1 md:px-4 md:py-2 bg-gray-700 rounded hover:bg-gray-600 text-xs md:text-sm">
-              <Globe className="mr-1 md:mr-2 h-4 w-4" /> Browser
-            </button>
-          </div>
-          <ScrollArea className="bg-gray-800 p-4 rounded h-64 md:h-96">
-            <p className="text-gray-400 text-sm md:text-base">Workspace content will be displayed here</p>
-          </ScrollArea>
+          <Tabs defaultValue="codeEditor" className="w-full">
+            <TabsList>
+              <TabsTrigger value="codeEditor"><Code className="mr-2 h-4 w-4" /> Code Editor</TabsTrigger>
+              <TabsTrigger value="terminal"><Terminal className="mr-2 h-4 w-4" /> Terminal</TabsTrigger>
+              <TabsTrigger value="planner"><Columns className="mr-2 h-4 w-4" /> Planner</TabsTrigger>
+              <TabsTrigger value="browser"><Globe className="mr-2 h-4 w-4" /> Browser</TabsTrigger>
+            </TabsList>
+            <TabsContent value="codeEditor">
+              <CodeEditor codebase={codebase} />
+            </TabsContent>
+            <TabsContent value="terminal">
+              <TerminalComponent />
+            </TabsContent>
+            <TabsContent value="planner">
+              <Planner />
+            </TabsContent>
+            <TabsContent value="browser">
+              <BrowserPreview codebase={codebase} />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

@@ -59,6 +59,7 @@ export class ErebusAgent {
     this.masModule = new MASModule();
     this.cognitiveArchitecture = new CognitiveArchitecture();
     this.aciInterface = new ACIInterface();
+    this.codebase = {};
   }
 
   async process(query) {
@@ -66,7 +67,7 @@ export class ErebusAgent {
       const response = await this.openai.chat.completions.create({
         model: this.model,
         messages: [
-          { role: 'system', content: 'You are an AI assistant powered by the Erebus framework, specialized in software development.' },
+          { role: 'system', content: 'You are an AI assistant powered by the Erebus framework, specialized in software development. Generate a complete codebase based on the user\'s request.' },
           { role: 'user', content: query }
         ],
       });
@@ -87,17 +88,29 @@ export class ErebusAgent {
     const interaction = this.masModule.interact(action);
     const output = this.aciInterface.execute(interaction);
 
-    return `
-      Erebus Analysis:
-      1. ${perception}
-      2. ${reasoning}
-      3. Action: ${action}
-      4. ${learning}
-      5. ${interaction}
-      6. ${output}
+    this.generateCodebase(input);
 
-      OpenAI Response:
-      ${input}
-    `;
+    return {
+      analysis: `
+        Erebus Analysis:
+        1. ${perception}
+        2. ${reasoning}
+        3. Action: ${action}
+        4. ${learning}
+        5. ${interaction}
+        6. ${output}
+      `,
+      codebase: this.codebase
+    };
+  }
+
+  generateCodebase(input) {
+    const fileRegex = /```(\w+)\n([\s\S]*?)```/g;
+    let match;
+
+    while ((match = fileRegex.exec(input)) !== null) {
+      const [, filename, content] = match;
+      this.codebase[filename] = content.trim();
+    }
   }
 }
