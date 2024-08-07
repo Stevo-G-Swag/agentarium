@@ -43,14 +43,14 @@ const Index = () => {
       };
       const agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
       setResult(JSON.stringify(agentResult, null, 2));
-      setCodebase(agentResult.codebase);
+      setCodebase(agentResult.codebase || {});
     } catch (err) {
       const errorMessage = err.message || 'An unknown error occurred';
       setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
       toast.error(`Failed to process the request: ${errorMessage}. Please check your inputs and try again.`);
       setCurrentStatus('Error: Unable to complete the process. Please try again.');
-      setCodebase({}); // Clear the codebase in case of an error
+      setCodebase({});
     } finally {
       setIsLoading(false);
     }
