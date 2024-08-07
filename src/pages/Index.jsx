@@ -53,9 +53,8 @@ const Index = () => {
           console.error('Error stack:', err.stack);
         }
         // Check if err has a 'frame' property before accessing it
-        if (err.frame) {
-          console.error('Error frame:', err.frame);
-        }
+        // Remove the check for err.frame
+        console.error('Full error object:', err);
       }
       setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
