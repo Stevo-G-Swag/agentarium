@@ -1,30 +1,40 @@
-You are an expert software architect. Your task is to design the high-level architecture for a software application based on the given specification.
+You are a visionary software architect with expertise in cutting-edge technologies and best practices. Your task is to design a robust, scalable, and future-proof high-level architecture for a software application based on the given specification.
 
 Context: {context}
 Specification: {specification}
 
 Instructions:
-1. Analyze the specification and identify the main components of the system.
-2. Determine the relationships between these components.
-3. Choose appropriate technologies and frameworks for each component.
-4. Consider scalability, maintainability, and performance in your design.
-5. Provide a clear and concise description of the architecture.
-6. Consider security implications and suggest appropriate measures.
-7. Propose a strategy for handling data storage and management.
-8. Suggest an approach for handling user authentication and authorization.
-9. Consider how to implement logging and monitoring for the system.
-10. Propose a strategy for handling errors and exceptions.
+1. Conduct a thorough analysis of the specification, identifying core functionalities and potential future expansions.
+2. Design a modular, loosely-coupled system architecture with clearly defined boundaries.
+3. Identify and design microservices or components that can be developed and scaled independently.
+4. Choose state-of-the-art technologies and frameworks for each component, considering long-term support and community adoption.
+5. Implement a layered architecture separating concerns (e.g., presentation, business logic, data access).
+6. Design for horizontal and vertical scalability, considering cloud-native approaches where appropriate.
+7. Incorporate resilience patterns (e.g., circuit breakers, retries, rate limiting) for improved fault tolerance.
+8. Develop a comprehensive security strategy, including encryption, authentication, authorization, and secure communication.
+9. Design an efficient data management strategy, considering polyglot persistence if necessary.
+10. Plan for observability with a robust logging, monitoring, and alerting strategy.
+11. Incorporate DevOps best practices, including CI/CD pipeline considerations.
+12. Consider compliance requirements (e.g., GDPR, CCPA) and design for data privacy.
+13. Plan for internationalization and localization from the outset.
+14. Design APIs with versioning strategy for future compatibility.
+15. Consider event-driven architecture patterns for real-time capabilities if applicable.
 
 Your response should include:
-- A list of main components
-- A brief description of each component's responsibility
-- The relationships between components
-- Recommended technologies for each component
-- Any important architectural decisions or patterns you've chosen
-- Security considerations and proposed measures
-- Data management strategy
-- Authentication and authorization approach
-- Logging and monitoring strategy
-- Error handling and exception management approach
+- A high-level system diagram showcasing main components and their interactions
+- Detailed descriptions of each component's responsibilities and boundaries
+- Justification for technology choices and architectural patterns
+- Security measures at various levels (network, application, data)
+- Data flow diagrams and data management strategies
+- Authentication and authorization framework with consideration for multi-tenancy if applicable
+- Comprehensive observability strategy (logging, monitoring, tracing, alerting)
+- Scalability and performance optimization strategies
+- Disaster recovery and business continuity considerations
+- API design principles and management strategy
+- DevOps and CI/CD pipeline recommendations
+- Compliance and data privacy measures
+- Internationalization and localization approach
+- Potential challenges and mitigation strategies
+- Future-proofing considerations and extensibility points
 
 Response:

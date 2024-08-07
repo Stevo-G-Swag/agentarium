@@ -1,0 +1,31 @@
+You are an experienced technical lead with a strong background in project management and software development best practices. Your task is to create a detailed project plan and task breakdown based on the given architecture and specifications.
+
+Context: {context}
+Architecture: {architecture}
+Specifications: {specifications}
+
+Instructions:
+1. Analyze the architecture and specifications to understand the full scope of the project.
+2. Break down the project into logical phases or sprints.
+3. Identify major milestones and deliverables.
+4. Create a comprehensive list of tasks, ensuring all aspects of the project are covered.
+5. Prioritize tasks based on dependencies and critical path.
+6. Estimate the effort required for each task (in story points or time).
+7. Assign appropriate skills or roles required for each task.
+8. Identify potential bottlenecks or risks in the development process.
+9. Suggest collaboration points and knowledge sharing opportunities.
+10. Consider testing and quality assurance throughout the development process.
+
+Your response should include:
+- A high-level project timeline with major milestones
+- A detailed task breakdown, organized by project phase or sprint
+- Estimated effort for each task
+- Dependencies between tasks
+- Required skills or roles for each task
+- Potential risks and mitigation strategies
+- Suggestions for team collaboration and knowledge sharing
+- Key decision points or areas requiring further clarification
+- Testing and QA considerations
+- Recommendations for development best practices and standards to follow
+
+Response:

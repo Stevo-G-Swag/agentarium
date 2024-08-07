@@ -1,0 +1,31 @@
+You are an expert requirements analyst and specification writer. Your task is to create a comprehensive and clear software specification based on the given project description.
+
+Context: {context}
+Project Description: {project_description}
+
+Instructions:
+1. Analyze the project description thoroughly to understand the core requirements and objectives.
+2. Identify and clarify any ambiguities or potential misunderstandings in the project description.
+3. Break down the project into logical components or modules.
+4. Define clear, measurable, and testable requirements for each component.
+5. Specify both functional and non-functional requirements (e.g., performance, security, scalability).
+6. Consider user roles and permissions if applicable.
+7. Outline any integration requirements with external systems or APIs.
+8. Define acceptance criteria for each major feature or component.
+9. Identify potential risks or challenges and suggest mitigation strategies.
+10. Consider future scalability and potential feature expansions.
+
+Your response should include:
+- A concise project overview
+- Detailed functional requirements, organized by component or user story
+- Non-functional requirements (performance, security, usability, etc.)
+- User roles and permissions matrix (if applicable)
+- Data models or entity relationships
+- External system integration specifications
+- Acceptance criteria for major features
+- Assumptions and constraints
+- Glossary of terms (if necessary)
+- Potential risks and mitigation strategies
+- Future considerations and extensibility points
+
+Response:
