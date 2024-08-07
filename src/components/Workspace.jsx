@@ -23,6 +23,11 @@ const Workspace = ({
   currentStatus,
   onFeedback
 }) => {
+  const handleFeedback = (feedback) => {
+    if (onFeedback) {
+      onFeedback(feedback);
+    }
+  };
   const [activeTab, setActiveTab] = useState('codeEditor');
 
   useEffect(() => {
@@ -103,10 +108,10 @@ const Workspace = ({
               <BrowserPreview codebase={codebase || {}} />
             </TabsContent>
             <TabsContent value="visualProgramming">
-              <VisualProgramming onUpdate={(newStructure) => onFeedback(newStructure)} />
+              <VisualProgramming onUpdate={handleFeedback} />
             </TabsContent>
             <TabsContent value="voiceInput">
-              <VoiceInput onTranscript={(transcript) => onFeedback(transcript)} />
+              <VoiceInput onTranscript={handleFeedback} />
             </TabsContent>
           </Tabs>
         </div>
