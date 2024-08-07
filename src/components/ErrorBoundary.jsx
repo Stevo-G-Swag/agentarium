@@ -13,7 +13,13 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
-    const errorMessage = error.message || 'An unexpected error occurred';
+    let errorMessage = 'An unexpected error occurred';
+    if (error && typeof error === 'object') {
+      errorMessage = error.message || errorMessage;
+      if (error.stack) {
+        console.error('Error stack:', error.stack);
+      }
+    }
     toast.error(errorMessage);
   }
 

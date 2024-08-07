@@ -45,7 +45,13 @@ const Index = () => {
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase || {});
     } catch (err) {
-      const errorMessage = err.message || 'An unknown error occurred';
+      let errorMessage = 'An unknown error occurred';
+      if (err && typeof err === 'object') {
+        errorMessage = err.message || errorMessage;
+        if (err.stack) {
+          console.error('Error stack:', err.stack);
+        }
+      }
       setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
       toast.error(`Failed to process the request. Please check your inputs and try again.`);
