@@ -94,8 +94,23 @@ export class ErebusAgent {
         updateCallback(step.name, step.message);
         try {
           results[step.name] = await step.agent[step.method](...step.args.map(arg => results[arg] || arg));
-          if (step.name === 'tasks' && (!Array.isArray(results[step.name]) || results[step.name].length === 0)) {
-            throw new Error('Invalid tasks format');
+          if (step.name === 'tasks') {
+            if (typeof results[step.name] === 'string') {
+              // If the result is a string, try to parse it as JSON
+              try {
+                results[step.name] = JSON.parse(results[step.name]);
+              } catch (parseError) {
+                console.error('Error parsing tasks JSON:', parseError);
+                // If parsing fails, split the string into tasks
+                results[step.name] = results[step.name].split('\n').filter(line => line.trim()).map(line => ({
+                  name: line.trim(),
+                  description: ''
+                }));
+              }
+            }
+            if (!Array.isArray(results[step.name]) || results[step.name].length === 0) {
+              throw new Error('Invalid tasks format');
+            }
           }
         } catch (error) {
           console.error(`Error in ${step.name} step:`, error);
