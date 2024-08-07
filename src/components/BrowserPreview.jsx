@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BrowserPreview = ({ codebase }) => {
-  const htmlContent = codebase['index.html'] || '<h1>No HTML file found</h1>';
+  const htmlContent = codebase && codebase['index.html'] ? codebase['index.html'] : '<h1>No HTML file found</h1>';
 
   return (
     <div className="h-full bg-white rounded overflow-hidden">

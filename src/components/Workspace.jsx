@@ -100,7 +100,7 @@ const Workspace = ({
               <Planner />
             </TabsContent>
             <TabsContent value="browser">
-              <BrowserPreview codebase={codebase} />
+              <BrowserPreview codebase={codebase || {}} />
             </TabsContent>
             <TabsContent value="visualProgramming">
               <VisualProgramming onUpdate={(newStructure) => onFeedback(newStructure)} />
