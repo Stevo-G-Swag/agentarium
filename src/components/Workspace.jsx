@@ -8,8 +8,8 @@ import Planner from './Planner';
 import BrowserPreview from './BrowserPreview';
 import VisualProgramming from './VisualProgramming';
 import VoiceInput from './VoiceInput';
-
 import { motion } from 'framer-motion';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 const Workspace = ({ 
   onSubmit, 
@@ -43,6 +43,8 @@ const Workspace = ({
     onSubmit(appName, appDescription);
   };
 
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <motion.header 
@@ -53,10 +55,10 @@ const Workspace = ({
       >
         <h1 className="text-2xl font-bold text-white">CodeGenie Workspace</h1>
       </motion.header>
-      <div className="flex-1 flex flex-col lg:flex-row p-4 space-y-4 lg:space-y-0 lg:space-x-4">
+      <div className={`flex-1 flex ${isMobile ? 'flex-col' : 'flex-row'} p-4 space-y-4 ${isMobile ? '' : 'space-y-0 space-x-4'}`}>
         <motion.div 
-          className="w-full lg:w-1/2 glassmorphism rounded-lg p-6"
-          initial={{ opacity: 0, x: -50 }}
+          className={`w-full ${isMobile ? '' : 'lg:w-1/2'} glassmorphism rounded-lg p-6`}
+          initial={{ opacity: 0, x: isMobile ? 0 : -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
@@ -104,13 +106,13 @@ const Workspace = ({
           )}
         </motion.div>
         <motion.div 
-          className="w-full lg:w-1/2 glassmorphism rounded-lg p-6"
-          initial={{ opacity: 0, x: 50 }}
+          className={`w-full ${isMobile ? '' : 'lg:w-1/2'} glassmorphism rounded-lg p-6`}
+          initial={{ opacity: 0, x: isMobile ? 0 : 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="flex flex-wrap justify-start mb-4">
+            <TabsList className={`flex ${isMobile ? 'flex-col' : 'flex-wrap'} justify-start mb-4`}>
               <TabsTrigger value="codeEditor" className="flex-grow"><Code className="mr-2 h-4 w-4" /> Code Editor</TabsTrigger>
               <TabsTrigger value="terminal" className="flex-grow"><Terminal className="mr-2 h-4 w-4" /> Terminal</TabsTrigger>
               <TabsTrigger value="planner" className="flex-grow"><Columns className="mr-2 h-4 w-4" /> Planner</TabsTrigger>

@@ -18,6 +18,9 @@ import PerformanceAgent from './PerformanceAgent';
 import AccessibilityAgent from './AccessibilityAgent';
 import LocalizationAgent from './LocalizationAgent';
 import BlockchainAgent from './BlockchainAgent';
+import CodeEditor from '../components/CodeEditor';
+import TerminalComponent from '../components/TerminalComponent';
+import BrowserPreview from '../components/BrowserPreview';
 
 export class ErebusAgent {
   constructor(apiKey, model) {
@@ -44,6 +47,11 @@ export class ErebusAgent {
       accessibility: new AccessibilityAgent(this.openai, this.model),
       localization: new LocalizationAgent(this.openai, this.model),
       blockchain: new BlockchainAgent(this.openai, this.model),
+    };
+    this.tools = {
+      codeEditor: new CodeEditor(),
+      terminal: new TerminalComponent(),
+      browser: new BrowserPreview(),
     };
     this.prompts = this.loadPrompts();
     this.feedback = [];
@@ -80,17 +88,21 @@ export class ErebusAgent {
         updateCallback('coding', 'Writing code...');
         let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase, this.prompts.code_monkey);
         
+        // Use the CodeEditor tool
+        this.tools.codeEditor.updateCode(codeChanges);
+        
         updateCallback('review', 'Reviewing changes...');
         let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
         
         while (!reviewResult.approved) {
           updateCallback('revision', 'Revising code...');
           codeChanges = await this.agents.codeMonkey.implementChanges(reviewResult.feedback, this.codebase, this.prompts.code_monkey);
+          this.tools.codeEditor.updateCode(codeChanges);
           reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
         }
         
         this.updateCodebase(codeChanges);
-        this.versionControl.commit(codeChanges, `Implemented ${task.name}`);
+        await this.tools.terminal.executeCommand(`git commit -m "Implemented ${task.name}"`);
       }
       
       updateCallback('frontend', 'Optimizing frontend...');
