@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, ArrowLeft, Code, Terminal, Layout, Globe, Mic } from "lucide-react"
 import { toast } from "sonner"
-import { ErebusAgent } from '../agents/ErebusAgent';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -16,83 +15,40 @@ const Index = () => {
   const [error, setError] = useState(null);
   const [settings, setSettings] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [erebusAgent, setErebusAgent] = useState(null);
   const [codebase, setCodebase] = useState({});
   const [appName, setAppName] = useState('');
   const [appDescription, setAppDescription] = useState('');
   const [activeComponent, setActiveComponent] = useState('codeEditor');
   const [currentStatus, setCurrentStatus] = useState('');
 
-  useEffect(() => {
-    if (settings) {
-      setErebusAgent(new ErebusAgent(settings.apiKey, settings.model));
-    }
-  }, [settings]);
-
   const handleSubmit = async (name, description) => {
-    if (!erebusAgent) {
-      setError('Please configure the settings first.');
-      return;
-    }
     setIsLoading(true);
     setError(null);
     try {
-      console.log('Starting handleSubmit with:', { name, description });
-      const updateCallback = (component, status) => {
-        setActiveComponent(component);
-        setCurrentStatus(status);
-      };
-      const agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
-      setResult(JSON.stringify(agentResult, null, 2));
-      setCodebase(agentResult.codebase || {});
+      // Simulating API call or processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setResult(`App "${name}" created successfully!\nDescription: ${description}`);
+      setCodebase({
+        'index.html': '<h1>Hello, World!</h1>',
+        'styles.css': 'body { font-family: Arial, sans-serif; }',
+        'script.js': 'console.log("App initialized");'
+      });
     } catch (err) {
-      let errorMessage = 'An unknown error occurred';
-      if (err && typeof err === 'object') {
-        errorMessage = err.message || errorMessage;
-        if (err.stack) {
-          console.error('Error stack:', err.stack);
-        }
-        // Check if err has a 'frame' property before accessing it
-        // Remove the check for err.frame
-        console.error('Full error object:', err);
-      }
-      setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
+      setError('Failed to create app. Please try again.');
       console.error('Error in handleSubmit:', err);
-      toast.error(`Failed to process the request. Please check your inputs and try again.`);
-      setCurrentStatus('Error: Unable to complete the process. Please try again.');
-      setCodebase({});
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFeedback = (feedback) => {
-    try {
-      console.log('User feedback:', feedback);
-      if (erebusAgent) {
-        erebusAgent.learn(feedback);
-      }
-    } catch (error) {
-      console.error('Error in handleFeedback:', error);
-      toast.error('Failed to process feedback. Please try again later.');
-    }
-  };
-
   const handleSaveSettings = (newSettings) => {
-    try {
-      setSettings(newSettings);
-      setShowSettings(false);
-      toast('Settings saved successfully', {
-        type: 'success',
-      });
-    } catch (error) {
-      console.error('Error in handleSaveSettings:', error);
-      toast.error('Failed to save settings. Please try again.');
-    }
+    setSettings(newSettings);
+    setShowSettings(false);
+    toast.success('Settings saved successfully');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6">
       <AnimatePresence mode="wait">
         {showSettings ? (
           <motion.div
