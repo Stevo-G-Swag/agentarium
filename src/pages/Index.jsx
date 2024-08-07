@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, ArrowLeft, Code, Terminal, Layout, Globe, Mic } from "lucide-react"
+import { toast } from "sonner"
 import { ErebusAgent } from '../agents/ErebusAgent';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
@@ -68,7 +69,9 @@ const Index = () => {
     try {
       setSettings(newSettings);
       setShowSettings(false);
-      toast.success('Settings saved successfully');
+      toast('Settings saved successfully', {
+        type: 'success',
+      });
     } catch (error) {
       console.error('Error in handleSaveSettings:', error);
       toast.error('Failed to save settings. Please try again.');
