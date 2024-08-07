@@ -56,8 +56,8 @@ const App = () => {
               <Route path="/" element={<Layout isLoggedIn={isLoggedIn} onLogout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
                 <Route index element={isLoggedIn ? <Index /> : <Navigate to="/login" />} />
                 <Route path="about" element={isLoggedIn ? <About /> : <Navigate to="/login" />} />
-                <Route path="login" element={<Login onLogin={handleLogin} />} />
-                <Route path="register" element={<Register onRegister={handleLogin} />} />
+                <Route path="login" element={isLoggedIn ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+                <Route path="register" element={isLoggedIn ? <Navigate to="/" /> : <Register onRegister={handleLogin} />} />
               </Route>
             </Routes>
           </div>
