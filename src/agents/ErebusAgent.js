@@ -1,7 +1,5 @@
 import OpenAI from 'openai';
 
-import OpenAI from 'openai';
-
 class AgentCore {
   perceive(input) {
     return `Analyzed input: ${input}`;
