@@ -18,7 +18,7 @@ const CodeEditor = ({ codebase }) => {
         </SelectContent>
       </Select>
       <ScrollArea className="flex-grow mt-4 p-4 bg-gray-800 rounded">
-        <pre className="text-sm text-white">{codebase[selectedFile] || 'No file selected'}</pre>
+        <pre className="text-sm text-white whitespace-pre-wrap break-words">{codebase[selectedFile] || 'No file selected'}</pre>
       </ScrollArea>
     </div>
   );

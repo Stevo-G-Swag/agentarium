@@ -15,7 +15,7 @@ const TerminalComponent = () => {
     <div className="h-full flex flex-col">
       <ScrollArea className="flex-grow p-4 bg-black text-green-500 font-mono text-sm">
         {output.map((line, index) => (
-          <div key={index}>{line}</div>
+          <div key={index} className="break-words">{line}</div>
         ))}
       </ScrollArea>
       <form onSubmit={handleCommand} className="mt-2 flex">

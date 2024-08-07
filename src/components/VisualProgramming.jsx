@@ -44,19 +44,21 @@ const VisualProgramming = ({ onUpdate }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="flex">
-        <div className="w-1/4 p-4">
+      <div className="flex flex-col md:flex-row">
+        <div className="w-full md:w-1/4 p-4">
           <h3 className="mb-4">Components</h3>
-          <DraggableComponent id="1" type="Button" />
-          <DraggableComponent id="2" type="Input" />
-          <DraggableComponent id="3" type="Form" />
+          <div className="flex flex-wrap gap-2">
+            <DraggableComponent id="1" type="Button" />
+            <DraggableComponent id="2" type="Input" />
+            <DraggableComponent id="3" type="Form" />
+          </div>
         </div>
-        <div className="w-3/4 p-4">
+        <div className="w-full md:w-3/4 p-4">
           <h3 className="mb-4">Canvas</h3>
           <DropZone onDrop={handleDrop} />
           <div className="mt-4">
             <h4>Structure:</h4>
-            <pre>{JSON.stringify(structure, null, 2)}</pre>
+            <pre className="whitespace-pre-wrap break-words">{JSON.stringify(structure, null, 2)}</pre>
           </div>
         </div>
       </div>
