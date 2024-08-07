@@ -47,7 +47,6 @@ export class ErebusAgent {
     };
     this.prompts = this.loadPrompts();
     this.feedback = [];
-    this.versionControl = new VersionControl();
   }
 
   loadPrompts() {
