@@ -16,7 +16,7 @@ const Workspace = ({
   isLoading, 
   error, 
   result, 
-  codebase, 
+  codebase = {}, 
   appName, 
   setAppName, 
   appDescription, 
