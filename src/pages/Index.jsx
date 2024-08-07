@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, ArrowLeft, Code, Terminal, Layout, Globe, Mic } from "lucide-react"
 import { toast } from "sonner"
+import ErrorBoundary from '../components/ErrorBoundary';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -48,8 +49,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6">
-      <AnimatePresence mode="wait">
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6">
+        <AnimatePresence mode="wait">
         {showSettings ? (
           <motion.div
             key="settings"
@@ -172,8 +174,9 @@ const Index = () => {
         whileTap={{ scale: 0.9 }}
       >
         {showSettings ? <ArrowLeft size={24} /> : <Settings size={24} />}
-      </motion.button>
-    </div>
+        </motion.button>
+      </div>
+    </ErrorBoundary>
   );
 };
 
