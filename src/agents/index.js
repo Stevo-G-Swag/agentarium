@@ -16,5 +16,4 @@ export { default as SecurityAgent } from './SecurityAgent';
 export { default as SpecificationWriterAgent } from './SpecificationWriterAgent';
 export { default as TechLeadAgent } from './TechLeadAgent';
 export { default as TechnicalWriterAgent } from './TechnicalWriterAgent';
-export { default as TestingAgent } from './TestingAgent';
 export { default as TroubleshooterAgent } from './TroubleshooterAgent';
