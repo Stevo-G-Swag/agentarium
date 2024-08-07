@@ -48,7 +48,7 @@ const Index = () => {
       const errorMessage = err.message || 'An unknown error occurred';
       setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
-      toast.error(`Failed to process the request: ${errorMessage}. Please check your inputs and try again.`);
+      toast.error(`Failed to process the request. Please check your inputs and try again.`);
       setCurrentStatus('Error: Unable to complete the process. Please try again.');
       setCodebase({});
     } finally {
