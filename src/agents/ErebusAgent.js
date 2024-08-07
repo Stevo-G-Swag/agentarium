@@ -1,26 +1,4 @@
 import OpenAI from 'openai';
-import fs from 'fs';
-import path from 'path';
-
-class AgentCore {
-  // ... (keep existing code)
-}
-
-class DRLModule {
-  // ... (keep existing code)
-}
-
-class MASModule {
-  // ... (keep existing code)
-}
-
-class CognitiveArchitecture {
-  // ... (keep existing code)
-}
-
-class ACIInterface {
-  // ... (keep existing code)
-}
 
 import ProductOwnerAgent from './ProductOwnerAgent';
 import SpecificationWriterAgent from './SpecificationWriterAgent';
@@ -54,13 +32,16 @@ export class ErebusAgent {
   }
 
   loadPrompts() {
-    const promptsDir = path.join(__dirname, 'prompts');
-    const prompts = {};
-    fs.readdirSync(promptsDir).forEach(file => {
-      const promptName = path.basename(file, '.prompt');
-      prompts[promptName] = fs.readFileSync(path.join(promptsDir, file), 'utf-8');
-    });
-    return prompts;
+    // For client-side, we'll use a simple object to store prompts
+    return {
+      specification_writer: "You are an expert software architect. Your task is to design the high-level architecture for a software application based on the given specification.",
+      architect: "You are an expert software architect. Your task is to design the high-level architecture for a software application based on the given specification.",
+      tech_lead: "You are an experienced tech lead. Your task is to create development tasks based on the given architecture.",
+      developer: "You are an expert software developer. Your task is to implement the specified feature or component based on the given architecture and requirements.",
+      code_monkey: "You are a diligent code implementer. Your task is to write or modify code based on the given instructions and existing codebase.",
+      reviewer: "You are an experienced code reviewer. Your task is to review the given code changes and provide constructive feedback.",
+      troubleshooter: "You are a Troubleshooter. Provide feedback on errors and suggest solutions."
+    };
   }
 
   async process(appName, description, updateCallback) {
