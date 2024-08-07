@@ -45,9 +45,11 @@ const Index = () => {
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase);
     } catch (err) {
-      setError('An error occurred while processing your request. Please try again.');
+      const errorMessage = err.message || 'An unknown error occurred';
+      setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
-      toast.error('Failed to process the request. Please check your inputs and try again.');
+      toast.error(`Failed to process the request: ${errorMessage}. Please check your inputs and try again.`);
+      setCurrentStatus('Error: Unable to complete the process. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -126,9 +128,17 @@ const Index = () => {
                   >
                     {isLoading ? 'Processing...' : 'Create App'}
                   </Button>
-                  {error && <p className="text-red-500 mt-4">{error}</p>}
+                  {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                      <strong className="font-bold">Error: </strong>
+                      <span className="block sm:inline">{error}</span>
+                    </div>
+                  )}
                   {currentStatus && (
-                    <p className="mt-4">Current Status: {currentStatus}</p>
+                    <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mt-4" role="alert">
+                      <strong className="font-bold">Current Status: </strong>
+                      <span className="block sm:inline">{currentStatus}</span>
+                    </div>
                   )}
                 </div>
                 <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 shadow-xl">
