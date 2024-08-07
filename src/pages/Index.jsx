@@ -5,6 +5,7 @@ import { toast } from "sonner"
 import { ErebusAgent } from '../agents/ErebusAgent';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
+import SubmitForm from '../components/SubmitForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -108,27 +109,8 @@ const Index = () => {
               <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 text-center">CodeGenie AI</h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 md:p-6 shadow-xl">
-                  <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">Create Your App</h2>
-                  <Input
-                    type="text"
-                    value={appName}
-                    onChange={(e) => setAppName(e.target.value)}
-                    placeholder="Enter app name..."
-                    className="mb-3 md:mb-4 placeholder-white/50"
-                  />
-                  <Textarea
-                    value={appDescription}
-                    onChange={(e) => setAppDescription(e.target.value)}
-                    placeholder="Enter app description..."
-                    className="mb-3 md:mb-4 placeholder-white/50"
-                  />
-                  <Button
-                    onClick={() => handleSubmit(appName, appDescription)}
-                    disabled={isLoading}
-                    className="w-full text-sm md:text-base"
-                  >
-                    {isLoading ? 'Processing...' : 'Create App'}
-                  </Button>
+                  <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">Submit Form</h2>
+                  <SubmitForm />
                   {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
                       <strong className="font-bold">Error: </strong>
