@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import * as agents from '.';
-import * as tools from '../tools';
+import * as tools from '../components/tools';
 
 export class ErebusAgent {
   constructor(apiKey, model) {
