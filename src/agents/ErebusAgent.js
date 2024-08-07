@@ -49,9 +49,9 @@ export class ErebusAgent {
       blockchain: new BlockchainAgent(this.openai, this.model),
     };
     this.tools = {
-      codeEditor: new CodeEditor(),
-      terminal: new TerminalComponent(),
-      browser: new BrowserPreview(),
+      codeEditor: CodeEditor,
+      terminal: TerminalComponent,
+      browser: BrowserPreview,
     };
     this.prompts = this.loadPrompts();
     this.feedback = [];
