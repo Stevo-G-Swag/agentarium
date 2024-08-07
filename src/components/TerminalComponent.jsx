@@ -20,6 +20,11 @@ const TerminalComponent = () => {
       },
     },
   });
+  const [environmentVariables, setEnvironmentVariables] = useState({
+    PATH: '/usr/local/bin:/usr/bin:/bin',
+    HOME: '/home',
+    USER: 'user',
+  });
   const inputRef = useRef(null);
 
   const executeCommand = useCallback((command) => {
@@ -100,11 +105,61 @@ const TerminalComponent = () => {
         setFileSystem({ ...fileSystem });
         return `Removed: ${targetPath}`;
       },
+      grep: () => {
+        if (args.length < 2) return 'Usage: grep <pattern> <file>';
+        const pattern = args[0];
+        const filePath = resolvePath(args[1]);
+        const file = getFileFromPath(filePath);
+        if (!file) return `grep: ${args[1]}: No such file or directory`;
+        if (file.type === 'directory') return `grep: ${args[1]}: Is a directory`;
+        const lines = file.content.split('\n');
+        const matches = lines.filter(line => line.includes(pattern));
+        return matches.join('\n');
+      },
+      find: () => {
+        if (args.length < 1) return 'Usage: find <directory> [-name <pattern>]';
+        const startPath = resolvePath(args[0]);
+        const startDir = getDirectoryFromPath(startPath);
+        if (!startDir) return `find: '${args[0]}': No such file or directory`;
+        const namePattern = args.indexOf('-name') !== -1 ? args[args.indexOf('-name') + 1] : null;
+        const results = [];
+        const search = (dir, path) => {
+          Object.entries(dir.contents).forEach(([name, item]) => {
+            const fullPath = `${path}/${name}`;
+            if (!namePattern || name.includes(namePattern)) {
+              results.push(fullPath);
+            }
+            if (item.type === 'directory') {
+              search(item, fullPath);
+            }
+          });
+        };
+        search(startDir, startPath);
+        return results.join('\n');
+      },
+      chmod: () => {
+        if (args.length < 2) return 'Usage: chmod <mode> <file/directory>';
+        const mode = args[0];
+        const targetPath = resolvePath(args[1]);
+        const target = getFileFromPath(targetPath);
+        if (!target) return `chmod: cannot access '${args[1]}': No such file or directory`;
+        // Simulating chmod by just storing the mode
+        target.mode = mode;
+        setFileSystem({ ...fileSystem });
+        return `Changed mode of '${targetPath}' to ${mode}`;
+      },
+      export: () => {
+        if (args.length !== 1 || !args[0].includes('=')) return 'Usage: export NAME=VALUE';
+        const [name, value] = args[0].split('=');
+        setEnvironmentVariables(prev => ({ ...prev, [name]: value }));
+        return `Exported: ${name}=${value}`;
+      },
+      env: () => Object.entries(environmentVariables).map(([key, value]) => `${key}=${value}`).join('\n'),
       clear: () => {
         setOutput([]);
         return null;
       },
-      help: () => 'Available commands: echo, pwd, ls, cd, mkdir, touch, cat, rm, clear, help',
+      help: () => 'Available commands: echo, pwd, ls, cd, mkdir, touch, cat, rm, grep, find, chmod, export, env, clear, help',
     };
 
     if (cmd in commands) {
@@ -116,7 +171,7 @@ const TerminalComponent = () => {
       }
     }
     return `Command not found: ${cmd}. Type 'help' for available commands.`;
-  }, [currentDirectory, fileSystem]);
+  }, [currentDirectory, fileSystem, environmentVariables]);
 
   const getDirectoryFromPath = (path) => {
     const parts = path.split('/').filter(Boolean);
@@ -150,7 +205,16 @@ const TerminalComponent = () => {
   const handleCommand = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    const result = executeCommand(input);
+    const commands = input.split('|').map(cmd => cmd.trim());
+    let result = '';
+    for (let i = 0; i < commands.length; i++) {
+      const command = commands[i];
+      if (i === 0) {
+        result = executeCommand(command);
+      } else {
+        result = executeCommand(`echo "${result}" | ${command}`);
+      }
+    }
     setOutput(prev => [...prev, `$ ${input}`, result].filter(Boolean));
     setHistory(prev => [input, ...prev].slice(0, 50));
     setHistoryIndex(-1);
@@ -174,7 +238,6 @@ const TerminalComponent = () => {
       });
     } else if (e.key === 'Tab') {
       e.preventDefault();
-      // Implement auto-completion logic here
       const parts = input.split(' ');
       const lastPart = parts[parts.length - 1];
       const currentDir = getDirectoryFromPath(currentDirectory);
@@ -183,7 +246,17 @@ const TerminalComponent = () => {
         parts[parts.length - 1] = matches[0];
         setInput(parts.join(' '));
       } else if (matches.length > 1) {
-        setOutput(prev => [...prev, matches.join('  ')]);
+        const commonPrefix = matches.reduce((a, b) => {
+          let i = 0;
+          while (i < a.length && a[i] === b[i]) i++;
+          return a.slice(0, i);
+        });
+        if (commonPrefix.length > lastPart.length) {
+          parts[parts.length - 1] = commonPrefix;
+          setInput(parts.join(' '));
+        } else {
+          setOutput(prev => [...prev, matches.join('  ')]);
+        }
       }
     }
   };

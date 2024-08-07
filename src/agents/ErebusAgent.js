@@ -97,17 +97,23 @@ export class ErebusAgent {
     this.feedback = [];
   }
 
-  loadPrompts() {
-    // For client-side, we'll use a simple object to store prompts
-    return {
-      specification_writer: "You are an expert software architect. Your task is to design the high-level architecture for a software application based on the given specification.",
-      architect: "You are an expert software architect. Your task is to design the high-level architecture for a software application based on the given specification.",
-      tech_lead: "You are an experienced tech lead. Your task is to create development tasks based on the given architecture.",
-      developer: "You are an expert software developer. Your task is to implement the specified feature or component based on the given architecture and requirements.",
-      code_monkey: "You are a diligent code implementer. Your task is to write or modify code based on the given instructions and existing codebase.",
-      reviewer: "You are an experienced code reviewer. Your task is to review the given code changes and provide constructive feedback.",
-      troubleshooter: "You are a Troubleshooter. Provide feedback on errors and suggest solutions."
-    };
+  async loadPrompts() {
+    const promptFiles = [
+      'architect.prompt',
+      'developer.prompt',
+      'reviewer.prompt',
+      'tester.prompt'
+    ];
+
+    const prompts = {};
+
+    for (const file of promptFiles) {
+      const response = await fetch(`/src/agents/prompts/${file}`);
+      const text = await response.text();
+      prompts[file.split('.')[0]] = text;
+    }
+
+    return prompts;
   }
 
   async process(appName, description, updateCallback, userFeedback) {
