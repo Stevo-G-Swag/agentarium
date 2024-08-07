@@ -101,15 +101,12 @@ export class ErebusAgent {
                 results[step.name] = JSON.parse(results[step.name]);
               } catch (parseError) {
                 console.error('Error parsing tasks JSON:', parseError);
-                // If parsing fails, split the string into tasks
-                results[step.name] = results[step.name].split('\n').filter(line => line.trim()).map(line => ({
-                  name: line.trim(),
-                  description: ''
-                }));
+                // If parsing fails, return a structured error object
+                results[step.name] = [{ name: 'Error', description: 'Failed to parse tasks. Please try again.' }];
               }
             }
             if (!Array.isArray(results[step.name]) || results[step.name].length === 0) {
-              throw new Error('Invalid tasks format');
+              results[step.name] = [{ name: 'Error', description: 'Invalid tasks format. Please try again.' }];
             }
           }
         } catch (error) {
