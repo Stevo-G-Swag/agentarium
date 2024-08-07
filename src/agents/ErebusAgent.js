@@ -49,7 +49,14 @@ export class ErebusAgent {
       blockchain: new BlockchainAgent(this.openai, this.model),
     };
     this.tools = {
-      codeEditor: CodeEditor,
+      codeEditor: {
+        updateCode: (changes) => {
+          // Implement the logic to update the code here
+          console.log('Updating code:', changes);
+          // For now, we'll just log the changes
+          // In a real implementation, you would update the actual code editor state
+        }
+      },
       terminal: TerminalComponent,
       browser: BrowserPreview,
     };
@@ -158,6 +165,8 @@ export class ErebusAgent {
       let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase, this.prompts.code_monkey);
 
       this.tools.codeEditor.updateCode(codeChanges);
+      // Update the codebase with the new changes
+      this.updateCodebase(codeChanges);
 
       updateCallback('review', 'Reviewing changes...');
       let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);

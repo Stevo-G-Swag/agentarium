@@ -13,20 +13,21 @@ class CodeMonkeyAgent {
       ],
     });
 
-    const jsonString = response.choices[0].message.content;
-    const isValidJson = /^(?:\{[\s\S]*\}|\[[\s\S]*\])$/.test(jsonString);
-
-    if (isValidJson) {
-      try {
-        return JSON.parse(jsonString);
-      } catch (error) {
-        console.error("Error parsing JSON response (despite validation):", error);
-        return {};
+    const content = response.choices[0].message.content;
+    try {
+      const parsedContent = JSON.parse(content);
+      if (typeof parsedContent === 'object' && parsedContent !== null) {
+        return parsedContent;
       }
-    } else {
-      console.error("Invalid JSON response:", jsonString);
-      return {};
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
     }
+    
+    // If parsing fails or the result is not an object, return a structured response
+    return {
+      "filename": "updated_code.js",
+      "content": content
+    };
   }
 }
 
