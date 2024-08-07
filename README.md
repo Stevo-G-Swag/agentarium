@@ -1,193 +1,115 @@
-# Welcome to your GPT Engineer project
+# CodeGenie AI: Your Magical Code Companion 🚀
 
-## Project info
+<div align="center"> <img src="https://your-image-url-here.com/codegenie-logo.png" alt="CodeGenie AI Logo" width="200"/> </div>
 
-**Project**: feature-builder-agentarium 
+Welcome to CodeGenie AI, where coding dreams come true with a sprinkle of artificial intelligence magic! 🌟
 
-**URL**: https://run.gptengineer.app/projects/fb18ad09-34f0-45fb-82ba-7c5e9be929cd/improve
+## 🎭 Overview
 
-**Description**: **Prompt:**
+CodeGenie AI is a revolutionary platform that harnesses the power of AI to assist developers in generating code snippets, solving programming challenges, and bringing their wildest app ideas to life. With a wave of our digital wand, we transform your ideas into fully functional applications!
 
+## ✨ Features
 
+- 🧠 AI-powered code generation
+- 🎨 Visual programming interface
+- 🔊 Voice-to-code functionality
+- 🖥️ Real-time code preview
+- 🛠️ Multi-agent collaboration system
+- 🌐 Cross-platform compatibility
 
+## 🚀 Getting Started
 
-You are tasked with designing a multi-agent system for a software development team. This system should consist of several specialized agents, each responsible for different aspects of software development. The goal is to create a fully functional codebase that includes a triaging agent, a frontend agent, a backend agent, and a testing agent. Each agent should have specific tools to perform its tasks, and the system should be able to handle a user query that involves developing a new feature for a web application.
+To embark on your magical coding journey with CodeGenie AI, follow these enchanted steps:
 
+1. Clone the repository:
 
+   ```bash
+   git clone https://github.com/your-username/codegenie-ai.git
+   ```
 
+2. Install the dependencies:
 
-**Project Structure:**
+   ```bash
+   cd codegenie-ai
+   npm install
+   ```
 
+3. Start the development server:
 
+   ```bash
+   npm run dev
+   ```
 
+4. Open your browser and navigate to [http://localhost:5173](http://localhost:5173) to experience the magic!
 
-1. **Main Entry Point:**
-   - `main.py`: This script initializes the triaging agent and processes a user query to develop a new feature for a web application.
+## 🧙‍♂️ Usage
 
+1. Enter your app name and description in the creation portal.
+2. Click "Create App" and watch as CodeGenie AI weaves its magic.
+3. Explore the generated codebase, make adjustments, and provide feedback.
+4. Use the voice input feature for hands-free coding experiences.
+5. Preview your app in real-time and make it shine!
 
+## 🔮 Future Roadmap
 
+Our crystal ball shows exciting features on the horizon:
 
-2. **Agents:**
-   - `triaging_agent.py`: Routes tasks to the appropriate agents based on the user query.
-   - `frontend_agent.py`: Handles frontend development tasks such as creating forms and styling components.
-   - `backend_agent.py`: Manages backend development tasks including API creation and database integration.
-   - `testing_agent.py`: Responsible for creating and running automated tests.
+- 📱 Mobile app development support
+- 🤖 Advanced AI model integration
+- 🌈 Enhanced UI/UX customization options
+- 🔗 Third-party API integration wizard
+- 🏆 Community challenges and code competitions
 
+## 📜 Changelog
 
+### Version 1.1.0 (2024-08-07 14:30 UTC)
 
+- 🎉 Introduced voice-to-code functionality
+- 🚀 Improved AI model performance by 30%
+- 🐛 Fixed minor bugs in the code preview feature
 
-3. **Tools:**
-   - `frontend_tools.py`: Contains functions for creating HTML forms and CSS styles.
-   - `backend_tools.py`: Provides functions for creating APIs using Flask and integrating with a SQLite database.
-   - `testing_tools.py`: Includes functions for creating unit tests using the `unittest` framework and simulating test execution.
+### Version 1.0.0 (2024-08-06 10:00 UTC)
 
+- 🎈 Initial release of CodeGenie AI
+- 🧠 Implemented core AI-powered code generation
+- 🖼️ Launched visual programming interface
 
+## 🤝 Contributing
 
+We welcome all magical beings to contribute to CodeGenie AI! Whether you're a coding wizard or a UX enchanter, your spells can make a difference. Check out our Contributing Guidelines to get started.
 
-4. **Tests:**
-   - `test_agents.py`: Uses `unittest` to verify that the triaging agent correctly routes tasks to the appropriate agents.
+## 📄 License
 
+CodeGenie AI is released under the MIT License. See the LICENSE file for more details.
 
+MIT License
 
+```
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-**Detailed Functionality:**
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-
-
-
-- **main.py:**
-  - Initialize the `TriagingAgent`.
-  - Process a user query that specifies the need for a frontend form, a backend API, and automated tests.
-
-
-
-
-- **triaging_agent.py:**
-  - Implement logic to parse the user query and determine which agents to activate based on keywords (e.g., "frontend", "backend", "test").
-  - Call the appropriate agent's `handle` method and pass the query along with a conversation history.
-
-
-
-
-- **frontend_agent.py:**
-  - Use `create_form` and `style_component` from `frontend_tools.py` to generate HTML and CSS based on the query.
-  - Append the generated code to the conversation history.
-
-
-
-
-- **backend_agent.py:**
-  - Utilize `create_api` and `integrate_database` from `backend_tools.py` to produce backend logic.
-  - Append the generated code to the conversation history.
-
-
-
-
-- **testing_agent.py:**
-  - Leverage `create_unit_tests` and `run_tests` from `testing_tools.py` to create and simulate test execution.
-  - Append the test code and results to the conversation history.
-
-
-
-
-- **frontend_tools.py:**
-  - Implement `create_form` to generate an HTML form with fields for name and email.
-  - Implement `style_component` to provide basic CSS styling for the form.
-
-
-
-
-- **backend_tools.py:**
-  - Implement `create_api` to set up a Flask API endpoint for form submissions.
-  - Implement `integrate_database` to define functions for initializing and interacting with a SQLite database.
-
-
-
-
-- **testing_tools.py:**
-  - Implement `create_unit_tests` to define a test case for the API using `unittest`.
-  - Implement `run_tests` to simulate running the tests and return a success message.
-
-
-
-
-- **test_agents.py:**
-  - Write test cases to ensure that the `TriagingAgent` correctly identifies and routes tasks to the `FrontendAgent`, `BackendAgent`, and `TestingAgent`.
-
-
-
-
-**Objective:**
-
-
-
-
-The system should be capable of processing a user query that specifies a need for a frontend form, backend API, and automated tests, and then generate the corresponding code for each component. The triaging agent should effectively delegate tasks to the appropriate agents, and the entire system should be testable using the provided `unittest` framework. 
-
-## Who is the owner of this repository?
-By default, GPT Engineer projects are created with public GitHub repositories.
-
-However, you can easily transfer the repository to your own GitHub account by navigating to your [GPT Engineer project](https://run.gptengineer.app/projects/fb18ad09-34f0-45fb-82ba-7c5e9be929cd/improve) and selecting Settings -> GitHub. 
-
-## How can I edit this code?
-There are several ways of editing your application.
-
-**Use GPT Engineer**
-
-Simply visit the GPT Engineer project at [GPT Engineer](https://run.gptengineer.app/projects/fb18ad09-34f0-45fb-82ba-7c5e9be929cd/improve) and start prompting.
-
-Changes made via gptengineer.app will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the GPT Engineer UI.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps: 
-
-```sh
-git clone https://github.com/GPT-Engineer-App/feature-builder-agentarium.git
-cd feature-builder-agentarium
-npm i
-
-# This will run a dev server with auto reloading and an instant preview.
-npm run dev
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
-**Edit a file directly in GitHub**
+## 🌟 Acknowledgements
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+A big thank you to all the magical contributors who have helped make CodeGenie AI possible. Your dedication and creativity fuel the enchantment!
 
-**Use GitHub Codespaces**
+## 🧙‍♀️ Support
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Encountering a bug or need a new spell? Open an issue in our GitHub repository or contact our support wizards at support@codegenieai.com.
 
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-All GPT Engineer projects can be deployed directly via the GPT Engineer app. 
-
-Simply visit your project at [GPT Engineer](https://run.gptengineer.app/projects/fb18ad09-34f0-45fb-82ba-7c5e9be929cd/improve) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain, then we recommend GitHub Pages.
-
-To use GitHub Pages you will need to follow these steps: 
-- Deploy your project using GitHub Pages - instructions [here](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site#creating-your-site)
-- Configure a custom domain for your GitHub Pages site - instructions [here](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site)
+<div align="center"> <strong>CodeGenie AI - Where Coding Dreams Come True! ✨</strong> </div>
