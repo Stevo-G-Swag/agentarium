@@ -20,7 +20,11 @@ const Index = () => {
 
   const [codebase, setCodebase] = useState({});
 
-  const handleSubmit = async (query) => {
+  const [appName, setAppName] = useState('');
+  const [appDescription, setAppDescription] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!erebusAgent) {
       setError('Please configure the settings first.');
       return;
@@ -28,11 +32,11 @@ const Index = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const agentResult = await erebusAgent.process(query);
-      setResult(agentResult.analysis);
+      const agentResult = await erebusAgent.process(appName, appDescription);
+      setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase);
     } catch (err) {
-      setError('An error occurred while processing your query. Please try again.');
+      setError('An error occurred while processing your request. Please try again.');
     } finally {
       setIsLoading(false);
     }

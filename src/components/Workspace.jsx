@@ -27,18 +27,25 @@ const Workspace = ({ onSubmit, isLoading, error, result, codebase }) => {
             <p className="text-sm md:text-base">Hello, I am CodeGenie, an AI Software Engineer. What would you like me to build you today?</p>
           </div>
           <form onSubmit={handleSubmit} className="mt-4">
+            <input
+              type="text"
+              value={appName}
+              onChange={(e) => setAppName(e.target.value)}
+              className="w-full p-2 mb-2 bg-gray-700 text-white rounded text-sm md:text-base"
+              placeholder="Enter app name..."
+            />
             <textarea
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              value={appDescription}
+              onChange={(e) => setAppDescription(e.target.value)}
               className="w-full h-24 p-2 bg-gray-700 text-white rounded text-sm md:text-base"
-              placeholder="Enter your query here..."
+              placeholder="Enter app description..."
             />
             <button
               type="submit"
               disabled={isLoading}
               className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-500 text-sm md:text-base"
             >
-              {isLoading ? 'Processing...' : 'Submit'}
+              {isLoading ? 'Processing...' : 'Create App'}
             </button>
           </form>
           {error && <p className="text-red-500 mt-2 text-sm md:text-base">{error}</p>}

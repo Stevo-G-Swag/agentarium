@@ -50,67 +50,73 @@ class ACIInterface {
   }
 }
 
+import ProductOwnerAgent from './ProductOwnerAgent';
+import SpecificationWriterAgent from './SpecificationWriterAgent';
+import ArchitectAgent from './ArchitectAgent';
+import TechLeadAgent from './TechLeadAgent';
+import DeveloperAgent from './DeveloperAgent';
+import CodeMonkeyAgent from './CodeMonkeyAgent';
+import ReviewerAgent from './ReviewerAgent';
+import TroubleshooterAgent from './TroubleshooterAgent';
+import DebuggerAgent from './DebuggerAgent';
+import TechnicalWriterAgent from './TechnicalWriterAgent';
+
 export class ErebusAgent {
   constructor(apiKey, model) {
     this.openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
     this.model = model;
-    this.agentCore = new AgentCore();
-    this.drlModule = new DRLModule();
-    this.masModule = new MASModule();
-    this.cognitiveArchitecture = new CognitiveArchitecture();
-    this.aciInterface = new ACIInterface();
     this.codebase = {};
-  }
-
-  async process(query) {
-    try {
-      const response = await this.openai.chat.completions.create({
-        model: this.model,
-        messages: [
-          { role: 'system', content: 'You are an AI assistant powered by the Erebus framework, specialized in software development. Generate a complete codebase based on the user\'s request.' },
-          { role: 'user', content: query }
-        ],
-      });
-
-      const result = response.choices[0].message.content;
-      return this.processWithErebus(result);
-    } catch (error) {
-      console.error('Error processing query:', error);
-      return 'An error occurred while processing your query. Please try again.';
-    }
-  }
-
-  processWithErebus(input) {
-    const perception = this.agentCore.perceive(input);
-    const reasoning = this.cognitiveArchitecture.reason(perception);
-    const action = this.agentCore.selectAction(reasoning);
-    const learning = this.drlModule.learn(action, perception);
-    const interaction = this.masModule.interact(action);
-    const output = this.aciInterface.execute(interaction);
-
-    this.generateCodebase(input);
-
-    return {
-      analysis: `
-        Erebus Analysis:
-        1. ${perception}
-        2. ${reasoning}
-        3. Action: ${action}
-        4. ${learning}
-        5. ${interaction}
-        6. ${output}
-      `,
-      codebase: this.codebase
+    this.agents = {
+      productOwner: new ProductOwnerAgent(),
+      specificationWriter: new SpecificationWriterAgent(this.openai, this.model),
+      architect: new ArchitectAgent(this.openai, this.model),
+      techLead: new TechLeadAgent(this.openai, this.model),
+      developer: new DeveloperAgent(this.openai, this.model),
+      codeMonkey: new CodeMonkeyAgent(this.openai, this.model),
+      reviewer: new ReviewerAgent(this.openai, this.model),
+      troubleshooter: new TroubleshooterAgent(this.openai, this.model),
+      debugger: new DebuggerAgent(this.openai, this.model),
+      technicalWriter: new TechnicalWriterAgent(this.openai, this.model),
     };
   }
 
-  generateCodebase(input) {
-    const fileRegex = /```(\w+)\n([\s\S]*?)```/g;
-    let match;
+  async process(appName, description) {
+    try {
+      const specification = await this.agents.specificationWriter.writeSpecification(description);
+      const architecture = await this.agents.architect.designArchitecture(specification);
+      const tasks = await this.agents.techLead.createTasks(architecture);
+      
+      for (const task of tasks) {
+        let taskImplementation = await this.agents.developer.describeImplementation(task);
+        let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase);
+        let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges);
+        
+        while (!reviewResult.approved) {
+          codeChanges = await this.agents.codeMonkey.implementChanges(reviewResult.feedback, this.codebase);
+          reviewResult = await this.agents.reviewer.reviewChanges(codeChanges);
+        }
+        
+        this.updateCodebase(codeChanges);
+      }
+      
+      const documentation = await this.agents.technicalWriter.writeDocumentation(this.codebase);
+      
+      return {
+        appName,
+        specification,
+        architecture,
+        codebase: this.codebase,
+        documentation
+      };
+    } catch (error) {
+      console.error('Error processing app creation:', error);
+      return this.agents.troubleshooter.provideFeedback(error);
+    }
+  }
 
-    while ((match = fileRegex.exec(input)) !== null) {
-      const [, filename, content] = match;
-      this.codebase[filename] = content.trim();
+  updateCodebase(changes) {
+    for (const [filename, content] of Object.entries(changes)) {
+      this.codebase[filename] = content;
     }
   }
 }
