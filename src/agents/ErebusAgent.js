@@ -1,5 +1,4 @@
 import OpenAI from 'openai';
-import Docker from 'dockerode';
 import * as agents from './agents';
 import * as tools from '../tools';
 
@@ -7,7 +6,6 @@ export class ErebusAgent {
   constructor(apiKey, model) {
     this.openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
     this.model = model;
-    this.docker = new Docker();
     this.codebase = {};
     this.agents = Object.entries(agents).reduce((acc, [name, Agent]) => {
       acc[name] = new Agent(this.openai, this.model);
@@ -42,24 +40,8 @@ export class ErebusAgent {
     return prompts;
   }
 
-  async initializeSandbox() {
-    this.sandbox = await this.docker.createContainer({
-      Image: 'node:14',
-      Cmd: ['/bin/bash'],
-      Tty: true,
-      WorkingDir: '/app',
-      HostConfig: {
-        Memory: 512 * 1024 * 1024, // 512MB
-        CpuShares: 512,
-      },
-    });
-    await this.sandbox.start();
-  }
-
   async process(appName, description, updateCallback, userFeedback) {
     try {
-      await this.initializeSandbox();
-
       const steps = [
         { name: 'specification', message: 'Writing specification...', agent: 'specificationWriter', method: 'writeSpecification', args: [description] },
         { name: 'architecture', message: 'Designing architecture...', agent: 'architect', method: 'designArchitecture', args: ['specification'] },
@@ -108,10 +90,7 @@ export class ErebusAgent {
         codebase: this.codebase,
       };
     } finally {
-      if (this.sandbox) {
-        await this.sandbox.stop();
-        await this.sandbox.remove();
-      }
+      // Cleanup code if needed
     }
   }
 
