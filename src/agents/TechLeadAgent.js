@@ -5,14 +5,20 @@ class TechLeadAgent {
   }
 
   async createTasks(architecture) {
-    const response = await this.openai.chat.completions.create({
-      model: this.model,
-      messages: [
-        { role: 'system', content: 'You are a Tech Lead. Create development tasks based on the architecture.' },
-        { role: 'user', content: `Create tasks for this architecture: ${architecture}` }
-      ],
-    });
-    return JSON.parse(response.choices[0].message.content);
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: this.model,
+        messages: [
+          { role: 'system', content: 'You are a Tech Lead. Create development tasks based on the architecture. Return the tasks as a JSON array of objects, where each object has a "name" and "description" field.' },
+          { role: 'user', content: `Create tasks for this architecture: ${architecture}` }
+        ],
+      });
+      const content = response.choices[0].message.content;
+      return JSON.parse(content);
+    } catch (error) {
+      console.error('Error in createTasks:', error);
+      return [{ name: 'Error', description: 'Failed to create tasks. Please try again.' }];
+    }
   }
 }
 

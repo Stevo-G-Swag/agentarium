@@ -94,12 +94,19 @@ export class ErebusAgent {
         updateCallback(step.name, step.message);
         try {
           results[step.name] = await step.agent[step.method](...step.args.map(arg => results[arg] || arg));
+          if (step.name === 'tasks' && (!Array.isArray(results[step.name]) || results[step.name].length === 0)) {
+            throw new Error('Invalid tasks format');
+          }
         } catch (error) {
           console.error(`Error in ${step.name} step:`, error);
           updateCallback('error', `Error in ${step.name} step. Troubleshooting...`);
           const feedback = await this.agents.troubleshooter.provideFeedback(error, this.prompts.troubleshooter);
           updateCallback('troubleshoot', feedback);
-          throw new Error(`${step.name} step failed: ${error.message}`);
+          if (step.name === 'tasks') {
+            results[step.name] = [{ name: 'Error', description: 'Failed to create tasks. Please try again.' }];
+          } else {
+            throw new Error(`${step.name} step failed: ${error.message}`);
+          }
         }
       }
 
