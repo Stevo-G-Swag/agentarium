@@ -87,27 +87,27 @@ const Index = () => {
             className="p-6"
           >
             <div className="max-w-7xl mx-auto">
-              <h1 className="text-4xl font-bold mb-8 text-center">CodeGenie AI</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 text-center">CodeGenie AI</h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 shadow-xl">
-                  <h2 className="text-2xl font-semibold mb-4">Create Your App</h2>
+                <div className="bg-white/10 backdrop-blur-lg rounded-lg p-4 md:p-6 shadow-xl">
+                  <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">Create Your App</h2>
                   <Input
                     type="text"
                     value={appName}
                     onChange={(e) => setAppName(e.target.value)}
                     placeholder="Enter app name..."
-                    className="mb-4"
+                    className="mb-3 md:mb-4 placeholder-white/50"
                   />
                   <Textarea
                     value={appDescription}
                     onChange={(e) => setAppDescription(e.target.value)}
                     placeholder="Enter app description..."
-                    className="mb-4"
+                    className="mb-3 md:mb-4 placeholder-white/50"
                   />
                   <Button
                     onClick={() => handleSubmit(appName, appDescription)}
                     disabled={isLoading}
-                    className="w-full"
+                    className="w-full text-sm md:text-base"
                   >
                     {isLoading ? 'Processing...' : 'Create App'}
                   </Button>
@@ -118,12 +118,12 @@ const Index = () => {
                 </div>
                 <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 shadow-xl">
                   <Tabs value={activeComponent} onValueChange={setActiveComponent}>
-                    <TabsList className="grid w-full grid-cols-5">
-                      <TabsTrigger value="codeEditor"><Code className="mr-2" /> Code</TabsTrigger>
-                      <TabsTrigger value="terminal"><Terminal className="mr-2" /> Terminal</TabsTrigger>
-                      <TabsTrigger value="planner"><Layout className="mr-2" /> Planner</TabsTrigger>
-                      <TabsTrigger value="browser"><Globe className="mr-2" /> Preview</TabsTrigger>
-                      <TabsTrigger value="voiceInput"><Mic className="mr-2" /> Voice</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-3 md:grid-cols-5">
+                      <TabsTrigger value="codeEditor" className="text-xs md:text-sm"><Code className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" /> Code</TabsTrigger>
+                      <TabsTrigger value="terminal" className="text-xs md:text-sm"><Terminal className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" /> Terminal</TabsTrigger>
+                      <TabsTrigger value="planner" className="text-xs md:text-sm"><Layout className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" /> Planner</TabsTrigger>
+                      <TabsTrigger value="browser" className="text-xs md:text-sm"><Globe className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" /> Preview</TabsTrigger>
+                      <TabsTrigger value="voiceInput" className="text-xs md:text-sm"><Mic className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" /> Voice</TabsTrigger>
                     </TabsList>
                     <TabsContent value="codeEditor">
                       <Workspace
