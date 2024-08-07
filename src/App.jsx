@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,10 +8,46 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { toast } from "sonner";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        if (error.status === 404) return false;
+        return failureCount < 3;
+      },
+      onError: (error) => {
+        console.error('Query error:', error);
+        toast.error('An error occurred while fetching data');
+      },
+    },
+    mutations: {
+      onError: (error) => {
+        console.error('Mutation error:', error);
+        toast.error('An error occurred while updating data');
+      },
+    },
+  },
+});
 
 const App = () => {
+  useEffect(() => {
+    const handleGlobalError = (event) => {
+      event.preventDefault();
+      console.error('Unhandled error:', event.error);
+      toast.error('An unexpected error occurred');
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    window.addEventListener('unhandledrejection', handleGlobalError);
+
+    return () => {
+      window.removeEventListener('error', handleGlobalError);
+      window.removeEventListener('unhandledrejection', handleGlobalError);
+    };
+  }, []);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [darkMode, setDarkMode] = React.useState(false);
 
@@ -47,23 +83,25 @@ const App = () => {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-          <div className={darkMode ? 'dark' : ''}>
-            <Routes>
-              <Route path="/" element={<Layout isLoggedIn={isLoggedIn} onLogout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
-                <Route index element={isLoggedIn ? <Index /> : <Navigate to="/login" />} />
-                <Route path="about" element={isLoggedIn ? <About /> : <Navigate to="/login" />} />
-                <Route path="login" element={isLoggedIn ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
-                <Route path="register" element={isLoggedIn ? <Navigate to="/" /> : <Register onRegister={handleLogin} />} />
-              </Route>
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <div className={darkMode ? 'dark' : ''}>
+              <Routes>
+                <Route path="/" element={<Layout isLoggedIn={isLoggedIn} onLogout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
+                  <Route index element={isLoggedIn ? <Index /> : <Navigate to="/login" />} />
+                  <Route path="about" element={isLoggedIn ? <About /> : <Navigate to="/login" />} />
+                  <Route path="login" element={isLoggedIn ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+                  <Route path="register" element={isLoggedIn ? <Navigate to="/" /> : <Register onRegister={handleLogin} />} />
+                </Route>
+              </Routes>
+            </div>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 

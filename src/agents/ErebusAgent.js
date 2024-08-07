@@ -72,87 +72,93 @@ export class ErebusAgent {
 
   async process(appName, description, updateCallback, userFeedback) {
     try {
-      updateCallback('specification', 'Writing specification...');
-      const specification = await this.agents.specificationWriter.writeSpecification(description, this.prompts.specification_writer);
-      
-      updateCallback('architecture', 'Designing architecture...');
-      const architecture = await this.agents.architect.designArchitecture(specification, this.prompts.architect);
-      
-      updateCallback('tasks', 'Creating tasks...');
-      const tasks = await this.agents.techLead.createTasks(architecture, this.prompts.tech_lead);
-      
-      for (const task of tasks) {
-        updateCallback('development', `Implementing task: ${task.name}...`);
-        let taskImplementation = await this.agents.developer.describeImplementation(task, this.prompts.developer);
-        
-        updateCallback('coding', 'Writing code...');
-        let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase, this.prompts.code_monkey);
-        
-        // Use the CodeEditor tool
-        this.tools.codeEditor.updateCode(codeChanges);
-        
-        updateCallback('review', 'Reviewing changes...');
-        let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
-        
-        while (!reviewResult.approved) {
-          updateCallback('revision', 'Revising code...');
-          codeChanges = await this.agents.codeMonkey.implementChanges(reviewResult.feedback, this.codebase, this.prompts.code_monkey);
-          this.tools.codeEditor.updateCode(codeChanges);
-          reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
+      const steps = [
+        { name: 'specification', message: 'Writing specification...', agent: this.agents.specificationWriter, method: 'writeSpecification', args: [description, this.prompts.specification_writer] },
+        { name: 'architecture', message: 'Designing architecture...', agent: this.agents.architect, method: 'designArchitecture', args: ['specification', this.prompts.architect] },
+        { name: 'tasks', message: 'Creating tasks...', agent: this.agents.techLead, method: 'createTasks', args: ['architecture', this.prompts.tech_lead] },
+        { name: 'frontend', message: 'Optimizing frontend...', agent: this.agents.frontend, method: 'optimize', args: [this.codebase] },
+        { name: 'backend', message: 'Optimizing backend...', agent: this.agents.backend, method: 'optimize', args: [this.codebase] },
+        { name: 'database', message: 'Optimizing database...', agent: this.agents.database, method: 'optimize', args: [this.codebase] },
+        { name: 'devOps', message: 'Setting up CI/CD...', agent: this.agents.devOps, method: 'setupCICD', args: [this.codebase] },
+        { name: 'security', message: 'Performing security analysis...', agent: this.agents.security, method: 'analyze', args: [this.codebase] },
+        { name: 'performance', message: 'Optimizing performance...', agent: this.agents.performance, method: 'optimize', args: [this.codebase] },
+        { name: 'accessibility', message: 'Ensuring accessibility...', agent: this.agents.accessibility, method: 'implement', args: [this.codebase] },
+        { name: 'localization', message: 'Implementing localization...', agent: this.agents.localization, method: 'implement', args: [this.codebase] },
+        { name: 'blockchain', message: 'Analyzing blockchain integration...', agent: this.agents.blockchain, method: 'analyze', args: [this.codebase] },
+        { name: 'documentation', message: 'Writing documentation...', agent: this.agents.technicalWriter, method: 'writeDocumentation', args: [this.codebase, this.prompts.technical_writer] },
+      ];
+
+      const results = {};
+
+      for (const step of steps) {
+        updateCallback(step.name, step.message);
+        try {
+          results[step.name] = await step.agent[step.method](...step.args.map(arg => results[arg] || arg));
+        } catch (error) {
+          console.error(`Error in ${step.name} step:`, error);
+          updateCallback('error', `Error in ${step.name} step. Troubleshooting...`);
+          const feedback = await this.agents.troubleshooter.provideFeedback(error, this.prompts.troubleshooter);
+          updateCallback('troubleshoot', feedback);
+          throw new Error(`${step.name} step failed: ${error.message}`);
         }
-        
-        this.updateCodebase(codeChanges);
-        await this.tools.terminal.executeCommand(`git commit -m "Implemented ${task.name}"`);
       }
-      
-      updateCallback('frontend', 'Optimizing frontend...');
-      await this.agents.frontend.optimize(this.codebase);
-      
-      updateCallback('backend', 'Optimizing backend...');
-      await this.agents.backend.optimize(this.codebase);
-      
-      updateCallback('database', 'Optimizing database...');
-      await this.agents.database.optimize(this.codebase);
-      
-      updateCallback('devOps', 'Setting up CI/CD...');
-      const cicdConfig = await this.agents.devOps.setupCICD(this.codebase);
-      
-      updateCallback('security', 'Performing security analysis...');
-      const securityReport = await this.agents.security.analyze(this.codebase);
-      
-      updateCallback('performance', 'Optimizing performance...');
-      await this.agents.performance.optimize(this.codebase);
-      
-      updateCallback('accessibility', 'Ensuring accessibility...');
-      await this.agents.accessibility.implement(this.codebase);
-      
-      updateCallback('localization', 'Implementing localization...');
-      await this.agents.localization.implement(this.codebase);
-      
-      updateCallback('blockchain', 'Analyzing blockchain integration...');
-      const blockchainSuggestions = await this.agents.blockchain.analyze(this.codebase);
-      
-      updateCallback('documentation', 'Writing documentation...');
-      const documentation = await this.agents.technicalWriter.writeDocumentation(this.codebase, this.prompts.technical_writer);
-      
+
+      // Process tasks
+      if (results.tasks) {
+        for (const task of results.tasks) {
+          await this.processTask(task, updateCallback);
+        }
+      }
+
       this.feedback.push(userFeedback);
       this.learn(userFeedback);
-      
+
       updateCallback('complete', 'Project completed!');
       return {
         appName,
-        specification,
-        architecture,
+        ...results,
         codebase: this.codebase,
-        documentation,
-        cicdConfig,
-        securityReport,
-        blockchainSuggestions
       };
     } catch (error) {
       console.error('Error processing app creation:', error);
-      updateCallback('error', 'An error occurred. Troubleshooting...');
-      return this.agents.troubleshooter.provideFeedback(error, this.prompts.troubleshooter);
+      updateCallback('error', 'A critical error occurred. Unable to complete the process.');
+      throw error;
+    }
+  }
+
+  async processTask(task, updateCallback) {
+    try {
+      updateCallback('development', `Implementing task: ${task.name}...`);
+      let taskImplementation = await this.agents.developer.describeImplementation(task, this.prompts.developer);
+
+      updateCallback('coding', 'Writing code...');
+      let codeChanges = await this.agents.codeMonkey.implementChanges(taskImplementation, this.codebase, this.prompts.code_monkey);
+
+      this.tools.codeEditor.updateCode(codeChanges);
+
+      updateCallback('review', 'Reviewing changes...');
+      let reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
+
+      let revisionCount = 0;
+      const MAX_REVISIONS = 3;
+
+      while (!reviewResult.approved && revisionCount < MAX_REVISIONS) {
+        updateCallback('revision', `Revising code (attempt ${revisionCount + 1})...`);
+        codeChanges = await this.agents.codeMonkey.implementChanges(reviewResult.feedback, this.codebase, this.prompts.code_monkey);
+        this.tools.codeEditor.updateCode(codeChanges);
+        reviewResult = await this.agents.reviewer.reviewChanges(codeChanges, this.prompts.reviewer);
+        revisionCount++;
+      }
+
+      if (!reviewResult.approved) {
+        throw new Error(`Failed to approve changes for task: ${task.name} after ${MAX_REVISIONS} revision attempts`);
+      }
+
+      this.updateCodebase(codeChanges);
+      await this.tools.terminal.executeCommand(`git commit -m "Implemented ${task.name}"`);
+    } catch (error) {
+      console.error(`Error processing task ${task.name}:`, error);
+      throw error;
     }
   }
 

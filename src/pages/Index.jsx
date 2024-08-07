@@ -45,9 +45,33 @@ const Index = () => {
       setCodebase(agentResult.codebase);
     } catch (err) {
       setError('An error occurred while processing your request. Please try again.');
-      console.error(err);
+      console.error('Error in handleSubmit:', err);
+      toast.error('Failed to process the request. Please check your inputs and try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFeedback = (feedback) => {
+    try {
+      console.log('User feedback:', feedback);
+      if (erebusAgent) {
+        erebusAgent.learn(feedback);
+      }
+    } catch (error) {
+      console.error('Error in handleFeedback:', error);
+      toast.error('Failed to process feedback. Please try again later.');
+    }
+  };
+
+  const handleSaveSettings = (newSettings) => {
+    try {
+      setSettings(newSettings);
+      setShowSettings(false);
+      toast.success('Settings saved successfully');
+    } catch (error) {
+      console.error('Error in handleSaveSettings:', error);
+      toast.error('Failed to save settings. Please try again.');
     }
   };
 
