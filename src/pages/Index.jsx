@@ -58,6 +58,10 @@ const Index = () => {
           error={error}
           result={result}
           codebase={codebase}
+          appName={appName}
+          setAppName={setAppName}
+          appDescription={appDescription}
+          setAppDescription={setAppDescription}
         />
       )}
       <button

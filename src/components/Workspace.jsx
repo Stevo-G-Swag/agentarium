@@ -7,12 +7,20 @@ import TerminalComponent from './TerminalComponent';
 import Planner from './Planner';
 import BrowserPreview from './BrowserPreview';
 
-const Workspace = ({ onSubmit, isLoading, error, result, codebase }) => {
-  const [query, setQuery] = useState('');
-
+const Workspace = ({ 
+  onSubmit, 
+  isLoading, 
+  error, 
+  result, 
+  codebase, 
+  appName, 
+  setAppName, 
+  appDescription, 
+  setAppDescription 
+}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(query);
+    onSubmit(appName, appDescription);
   };
 
   return (
