@@ -15,7 +15,9 @@ class CodeMonkeyAgent {
 
     const content = response.choices[0].message.content;
     try {
-      const parsedContent = JSON.parse(content);
+      // Remove any markdown code block syntax
+      const cleanedContent = content.replace(/```(?:json)?\n?/g, '').trim();
+      const parsedContent = JSON.parse(cleanedContent);
       if (typeof parsedContent === 'object' && parsedContent !== null) {
         return parsedContent;
       }
@@ -26,7 +28,7 @@ class CodeMonkeyAgent {
     // If parsing fails or the result is not an object, return a structured response
     return {
       "filename": "updated_code.js",
-      "content": content
+      "content": content.replace(/```(?:json)?\n?/g, '').trim()
     };
   }
 }

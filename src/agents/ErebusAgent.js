@@ -61,7 +61,13 @@ export class ErebusAgent {
           }
         }
       },
-      terminal: TerminalComponent,
+      terminal: {
+        executeCommand: (command) => {
+          console.log('Executing command:', command);
+          // Here you would typically implement the actual command execution
+          // For now, we'll just log it
+        }
+      },
       browser: BrowserPreview,
     };
     this.prompts = this.loadPrompts();

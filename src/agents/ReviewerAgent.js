@@ -13,19 +13,17 @@ class ReviewerAgent {
       ],
     });
 
-    const jsonString = response.choices[0].message.content;
-    const isValidJson = /^(?:\{[\s\S]*\}|\[[\s\S]*\])$/.test(jsonString);
-
-    if (isValidJson) {
-      try {
-        return JSON.parse(jsonString);
-      } catch (error) {
-        console.error("Error parsing JSON response (despite validation):", error);
-        return {};
-      }
-    } else {
-      console.error("Invalid JSON response:", jsonString);
-      return {};
+    const content = response.choices[0].message.content;
+    try {
+      // Remove any markdown code block syntax
+      const cleanedContent = content.replace(/```(?:json)?\n?/g, '').trim();
+      return JSON.parse(cleanedContent);
+    } catch (error) {
+      console.error("Error parsing JSON response:", error);
+      return {
+        approved: false,
+        feedback: "Error parsing review response. Please try again."
+      };
     }
   }
 }
