@@ -1,14 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from 'framer-motion';
 
 const TerminalComponent = () => {
   const [output, setOutput] = useState([]);
   const [input, setInput] = useState('');
+  const [currentDirectory, setCurrentDirectory] = useState('/');
+
+  const executeCommand = useCallback((command) => {
+    const parts = command.split(' ');
+    const cmd = parts[0];
+    const args = parts.slice(1);
+
+    switch (cmd) {
+      case 'echo':
+        return args.join(' ');
+      case 'pwd':
+        return currentDirectory;
+      case 'ls':
+        return 'file1.txt file2.txt directory1/';
+      case 'cd':
+        if (args[0] === '..') {
+          setCurrentDirectory(prev => {
+            const parts = prev.split('/').filter(Boolean);
+            parts.pop();
+            return '/' + parts.join('/');
+          });
+          return `Changed directory to ${currentDirectory}`;
+        } else if (args[0]) {
+          setCurrentDirectory(prev => `${prev}${args[0]}/`.replace('//', '/'));
+          return `Changed directory to ${currentDirectory}${args[0]}/`;
+        }
+        return 'Usage: cd <directory>';
+      case 'clear':
+        setOutput([]);
+        return null;
+      default:
+        return `Command not found: ${cmd}`;
+    }
+  }, [currentDirectory]);
 
   const handleCommand = (e) => {
     e.preventDefault();
-    setOutput([...output, `$ ${input}`, 'Command not recognized']);
+    const result = executeCommand(input);
+    setOutput(prev => [...prev, `$ ${input}`, result].filter(Boolean));
     setInput('');
   };
 

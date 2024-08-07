@@ -63,9 +63,32 @@ export class ErebusAgent {
       },
       terminal: {
         executeCommand: (command) => {
-          console.log('Executing command:', command);
-          // Here you would typically implement the actual command execution
-          // For now, we'll just log it
+          return new Promise((resolve) => {
+            const parts = command.split(' ');
+            const cmd = parts[0];
+            const args = parts.slice(1);
+
+            switch (cmd) {
+              case 'echo':
+                resolve(args.join(' '));
+                break;
+              case 'pwd':
+                resolve('/project');
+                break;
+              case 'ls':
+                resolve(Object.keys(this.codebase).join(' '));
+                break;
+              case 'cat':
+                if (args[0] && this.codebase[args[0]]) {
+                  resolve(this.codebase[args[0]]);
+                } else {
+                  resolve(`File not found: ${args[0]}`);
+                }
+                break;
+              default:
+                resolve(`Command not found: ${cmd}`);
+            }
+          });
         }
       },
       browser: BrowserPreview,
