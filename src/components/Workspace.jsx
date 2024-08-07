@@ -9,6 +9,8 @@ import BrowserPreview from './BrowserPreview';
 import VisualProgramming from './VisualProgramming';
 import VoiceInput from './VoiceInput';
 
+import { motion } from 'framer-motion';
+
 const Workspace = ({ 
   onSubmit, 
   isLoading, 
@@ -42,52 +44,73 @@ const Workspace = ({
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-gray-800 p-4">
-        <h1 className="text-2xl font-bold">CodeGenie Workspace</h1>
-      </header>
-      <div className="flex-1 flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 p-4 border-b lg:border-b-0 lg:border-r border-gray-700">
-          <div className="flex items-center mb-4">
-            <img src="/placeholder.svg" alt="AI Avatar" className="w-8 h-8 rounded-full mr-2" />
-            <p className="text-sm lg:text-base">Hello, I am CodeGenie, an AI Software Engineer. What would you like me to build you today?</p>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <motion.header 
+        className="bg-gray-800 p-4 shadow-lg"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-2xl font-bold text-white">CodeGenie Workspace</h1>
+      </motion.header>
+      <div className="flex-1 flex flex-col lg:flex-row p-4 space-y-4 lg:space-y-0 lg:space-x-4">
+        <motion.div 
+          className="w-full lg:w-1/2 glassmorphism rounded-lg p-6"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="flex items-center mb-6">
+            <motion.img 
+              src="/placeholder.svg" 
+              alt="AI Avatar" 
+              className="w-12 h-12 rounded-full mr-4 animate-float"
+            />
+            <p className="text-lg text-white">Hello, I am CodeGenie, an AI Software Engineer. What would you like me to build you today?</p>
           </div>
-          <form onSubmit={handleSubmit} className="mt-4 space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               value={appName}
               onChange={(e) => setAppName(e.target.value)}
-              className="w-full p-2 bg-gray-700 text-white rounded text-sm lg:text-base"
+              className="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-300"
               placeholder="Enter app name..."
             />
             <textarea
               value={appDescription}
               onChange={(e) => setAppDescription(e.target.value)}
-              className="w-full h-24 p-2 bg-gray-700 text-white rounded text-sm lg:text-base"
+              className="w-full h-32 p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-300"
               placeholder="Enter app description..."
             />
-            <button
+            <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-500 text-sm lg:text-base"
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-500 transition duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {isLoading ? 'Processing...' : 'Create App'}
-            </button>
+            </motion.button>
           </form>
-          {error && <p className="text-red-500 mt-2 text-sm lg:text-base">{error}</p>}
+          {error && <p className="text-red-500 mt-4">{error}</p>}
           {currentStatus && (
-            <p className="mt-2 text-sm lg:text-base">Current Status: {currentStatus}</p>
+            <p className="mt-4 text-white">Current Status: {currentStatus}</p>
           )}
           {result && (
-            <ScrollArea className="mt-4 p-4 bg-gray-700 rounded h-64 lg:h-96">
-              <h2 className="text-lg lg:text-xl font-bold mb-2">Result:</h2>
-              <pre className="whitespace-pre-wrap text-sm lg:text-base">{result}</pre>
+            <ScrollArea className="mt-6 p-4 bg-gray-700 rounded-lg h-64 lg:h-96">
+              <h2 className="text-xl font-bold mb-2 text-white">Result:</h2>
+              <pre className="whitespace-pre-wrap text-sm text-gray-300">{result}</pre>
             </ScrollArea>
           )}
-        </div>
-        <div className="w-full lg:w-1/2 p-4">
+        </motion.div>
+        <motion.div 
+          className="w-full lg:w-1/2 glassmorphism rounded-lg p-6"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="flex flex-wrap justify-start">
+            <TabsList className="flex flex-wrap justify-start mb-4">
               <TabsTrigger value="codeEditor" className="flex-grow"><Code className="mr-2 h-4 w-4" /> Code Editor</TabsTrigger>
               <TabsTrigger value="terminal" className="flex-grow"><Terminal className="mr-2 h-4 w-4" /> Terminal</TabsTrigger>
               <TabsTrigger value="planner" className="flex-grow"><Columns className="mr-2 h-4 w-4" /> Planner</TabsTrigger>
@@ -114,7 +137,7 @@ const Workspace = ({
               <VoiceInput onTranscript={handleFeedback} />
             </TabsContent>
           </Tabs>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

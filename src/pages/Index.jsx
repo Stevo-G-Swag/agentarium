@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Loader2 } from "lucide-react"
+import { motion, AnimatePresence } from 'framer-motion';
+import { Settings, ArrowLeft } from "lucide-react"
 import { ErebusAgent } from '../agents/ErebusAgent';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
@@ -47,9 +48,7 @@ const Index = () => {
   };
 
   const handleFeedback = (feedback) => {
-    // Process user feedback
     console.log('User feedback:', feedback);
-    // You can send this feedback to the ErebusAgent for learning
     if (erebusAgent) {
       erebusAgent.learn(feedback);
     }
@@ -61,30 +60,52 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {showSettings ? (
-        <SettingsMenu onSave={handleSaveSettings} />
-      ) : (
-        <Workspace
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
-          error={error}
-          result={result}
-          codebase={codebase}
-          appName={appName}
-          setAppName={setAppName}
-          appDescription={appDescription}
-          setAppDescription={setAppDescription}
-          activeComponent={activeComponent}
-          currentStatus={currentStatus}
-        />
-      )}
-      <button
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <AnimatePresence mode="wait">
+        {showSettings ? (
+          <motion.div
+            key="settings"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="p-6"
+          >
+            <SettingsMenu onSave={handleSaveSettings} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="workspace"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Workspace
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              error={error}
+              result={result}
+              codebase={codebase}
+              appName={appName}
+              setAppName={setAppName}
+              appDescription={appDescription}
+              setAppDescription={setAppDescription}
+              activeComponent={activeComponent}
+              currentStatus={currentStatus}
+              onFeedback={handleFeedback}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <motion.button
         onClick={() => setShowSettings(!showSettings)}
-        className="fixed bottom-4 right-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
+        className="fixed bottom-6 right-6 p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
-        {showSettings ? 'Back to Workspace' : 'Settings'}
-      </button>
+        {showSettings ? <ArrowLeft size={24} /> : <Settings size={24} />}
+      </motion.button>
     </div>
   );
 };
