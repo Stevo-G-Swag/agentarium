@@ -15,10 +15,16 @@ class TechLeadAgent {
       });
       const content = response.choices[0].message.content;
       try {
+        // Attempt to parse the content as JSON
         return JSON.parse(content);
       } catch (parseError) {
         console.error('Error parsing JSON:', parseError);
-        return [{ name: 'Error', description: 'Failed to parse tasks. Please try again.' }];
+        // If parsing fails, attempt to extract tasks from the text
+        const tasks = content.split('\n').filter(line => line.trim().startsWith('-')).map(line => {
+          const [name, ...descriptionParts] = line.trim().substring(1).split(':');
+          return { name: name.trim(), description: descriptionParts.join(':').trim() };
+        });
+        return tasks.length > 0 ? tasks : [{ name: 'Error', description: 'Failed to parse tasks. Please try again.' }];
       }
     } catch (error) {
       console.error('Error in createTasks:', error);

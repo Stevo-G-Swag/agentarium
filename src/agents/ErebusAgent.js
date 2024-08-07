@@ -129,7 +129,11 @@ export class ErebusAgent {
     } catch (error) {
       console.error('Error processing app creation:', error);
       updateCallback('error', 'A critical error occurred. Unable to complete the process.');
-      throw error;
+      return {
+        appName,
+        error: error.message,
+        codebase: this.codebase,
+      };
     }
   }
 

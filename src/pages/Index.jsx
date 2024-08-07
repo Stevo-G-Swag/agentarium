@@ -50,6 +50,7 @@ const Index = () => {
       console.error('Error in handleSubmit:', err);
       toast.error(`Failed to process the request: ${errorMessage}. Please check your inputs and try again.`);
       setCurrentStatus('Error: Unable to complete the process. Please try again.');
+      setCodebase({}); // Clear the codebase in case of an error
     } finally {
       setIsLoading(false);
     }
