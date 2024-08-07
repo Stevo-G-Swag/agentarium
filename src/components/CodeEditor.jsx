@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from 'framer-motion';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
 import { ESLint } from 'eslint';
+
+SyntaxHighlighter.registerLanguage('jsx', jsx);
 
 const CodeEditor = ({ codebase, onCodeChange }) => {
   const [selectedFile, setSelectedFile] = useState('');
