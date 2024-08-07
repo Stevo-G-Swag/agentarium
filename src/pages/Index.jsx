@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Loader2 } from "lucide-react"
-import ErebusAgent from '../agents/ErebusAgent';
+import { ErebusAgent } from '../agents/ErebusAgent';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
 
