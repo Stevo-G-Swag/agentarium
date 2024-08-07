@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import TriagingAgent from '../agents/TriagingAgent';
+import QueryForm from '../components/QueryForm';
+import ResultDisplay from '../components/ResultDisplay';
 
 const triagingAgent = new TriagingAgent();
 
 const Index = () => {
-  const [query, setQuery] = useState('');
   const [result, setResult] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (query) => {
     const triageResult = triagingAgent.process(query);
     setResult(triageResult);
   };
@@ -24,23 +24,10 @@ const Index = () => {
           <CardDescription>Enter your query to generate code</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <Textarea
-              placeholder="Enter your query here..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="mb-4"
-            />
-            <Button type="submit">Submit Query</Button>
-          </form>
+          <QueryForm onSubmit={handleSubmit} />
         </CardContent>
         <CardFooter>
-          <div className="w-full">
-            <h3 className="text-lg font-semibold mb-2">Result:</h3>
-            <pre className="bg-gray-200 p-4 rounded-md overflow-x-auto">
-              {result}
-            </pre>
-          </div>
+          <ResultDisplay result={result} />
         </CardFooter>
       </Card>
     </div>
