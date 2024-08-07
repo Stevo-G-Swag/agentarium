@@ -51,10 +51,14 @@ export class ErebusAgent {
     this.tools = {
       codeEditor: {
         updateCode: (changes) => {
-          // Implement the logic to update the code here
           console.log('Updating code:', changes);
-          // For now, we'll just log the changes
-          // In a real implementation, you would update the actual code editor state
+          if (typeof changes === 'object' && changes !== null) {
+            Object.entries(changes).forEach(([filename, content]) => {
+              this.codebase[filename] = content;
+            });
+          } else {
+            console.error('Invalid changes format. Expected an object.');
+          }
         }
       },
       terminal: TerminalComponent,
