@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 
 class TriagingAgent {
   constructor(apiKey, model) {
-    this.openai = new OpenAI({ apiKey });
+    this.openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
     this.model = model;
   }
 
