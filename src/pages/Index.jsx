@@ -35,7 +35,7 @@ const Index = () => {
         setActiveComponent(component);
         setCurrentStatus(status);
       };
-      const agentResult = await erebusAgent.process(name, description, updateCallback);
+      const agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase);
     } catch (err) {
@@ -43,6 +43,15 @@ const Index = () => {
       console.error(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFeedback = (feedback) => {
+    // Process user feedback
+    console.log('User feedback:', feedback);
+    // You can send this feedback to the ErebusAgent for learning
+    if (erebusAgent) {
+      erebusAgent.learn(feedback);
     }
   };
 

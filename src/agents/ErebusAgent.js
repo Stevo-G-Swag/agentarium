@@ -1,5 +1,4 @@
 import OpenAI from 'openai';
-
 import ProductOwnerAgent from './ProductOwnerAgent';
 import SpecificationWriterAgent from './SpecificationWriterAgent';
 import ArchitectAgent from './ArchitectAgent';
@@ -10,6 +9,15 @@ import ReviewerAgent from './ReviewerAgent';
 import TroubleshooterAgent from './TroubleshooterAgent';
 import DebuggerAgent from './DebuggerAgent';
 import TechnicalWriterAgent from './TechnicalWriterAgent';
+import FrontendAgent from './FrontendAgent';
+import BackendAgent from './BackendAgent';
+import DatabaseAgent from './DatabaseAgent';
+import DevOpsAgent from './DevOpsAgent';
+import SecurityAgent from './SecurityAgent';
+import PerformanceAgent from './PerformanceAgent';
+import AccessibilityAgent from './AccessibilityAgent';
+import LocalizationAgent from './LocalizationAgent';
+import BlockchainAgent from './BlockchainAgent';
 
 export class ErebusAgent {
   constructor(apiKey, model) {
@@ -27,8 +35,19 @@ export class ErebusAgent {
       troubleshooter: new TroubleshooterAgent(this.openai, this.model),
       debugger: new DebuggerAgent(this.openai, this.model),
       technicalWriter: new TechnicalWriterAgent(this.openai, this.model),
+      frontend: new FrontendAgent(this.openai, this.model),
+      backend: new BackendAgent(this.openai, this.model),
+      database: new DatabaseAgent(this.openai, this.model),
+      devOps: new DevOpsAgent(this.openai, this.model),
+      security: new SecurityAgent(this.openai, this.model),
+      performance: new PerformanceAgent(this.openai, this.model),
+      accessibility: new AccessibilityAgent(this.openai, this.model),
+      localization: new LocalizationAgent(this.openai, this.model),
+      blockchain: new BlockchainAgent(this.openai, this.model),
     };
     this.prompts = this.loadPrompts();
+    this.feedback = [];
+    this.versionControl = new VersionControl();
   }
 
   loadPrompts() {
@@ -44,7 +63,7 @@ export class ErebusAgent {
     };
   }
 
-  async process(appName, description, updateCallback) {
+  async process(appName, description, updateCallback, userFeedback) {
     try {
       updateCallback('specification', 'Writing specification...');
       const specification = await this.agents.specificationWriter.writeSpecification(description, this.prompts.specification_writer);
@@ -72,10 +91,41 @@ export class ErebusAgent {
         }
         
         this.updateCodebase(codeChanges);
+        this.versionControl.commit(codeChanges, `Implemented ${task.name}`);
       }
+      
+      updateCallback('frontend', 'Optimizing frontend...');
+      await this.agents.frontend.optimize(this.codebase);
+      
+      updateCallback('backend', 'Optimizing backend...');
+      await this.agents.backend.optimize(this.codebase);
+      
+      updateCallback('database', 'Optimizing database...');
+      await this.agents.database.optimize(this.codebase);
+      
+      updateCallback('devOps', 'Setting up CI/CD...');
+      const cicdConfig = await this.agents.devOps.setupCICD(this.codebase);
+      
+      updateCallback('security', 'Performing security analysis...');
+      const securityReport = await this.agents.security.analyze(this.codebase);
+      
+      updateCallback('performance', 'Optimizing performance...');
+      await this.agents.performance.optimize(this.codebase);
+      
+      updateCallback('accessibility', 'Ensuring accessibility...');
+      await this.agents.accessibility.implement(this.codebase);
+      
+      updateCallback('localization', 'Implementing localization...');
+      await this.agents.localization.implement(this.codebase);
+      
+      updateCallback('blockchain', 'Analyzing blockchain integration...');
+      const blockchainSuggestions = await this.agents.blockchain.analyze(this.codebase);
       
       updateCallback('documentation', 'Writing documentation...');
       const documentation = await this.agents.technicalWriter.writeDocumentation(this.codebase, this.prompts.technical_writer);
+      
+      this.feedback.push(userFeedback);
+      this.learn(userFeedback);
       
       updateCallback('complete', 'Project completed!');
       return {
@@ -83,13 +133,20 @@ export class ErebusAgent {
         specification,
         architecture,
         codebase: this.codebase,
-        documentation
+        documentation,
+        cicdConfig,
+        securityReport,
+        blockchainSuggestions
       };
     } catch (error) {
       console.error('Error processing app creation:', error);
       updateCallback('error', 'An error occurred. Troubleshooting...');
       return this.agents.troubleshooter.provideFeedback(error, this.prompts.troubleshooter);
     }
+  }
+
+  learn(feedback) {
+    // Implement adaptive learning based on user feedback
   }
 
   updateCodebase(changes) {

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Columns, Code, Globe } from 'lucide-react';
+import { Terminal, Columns, Code, Globe, Mic } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeEditor from './CodeEditor';
 import TerminalComponent from './TerminalComponent';
 import Planner from './Planner';
 import BrowserPreview from './BrowserPreview';
+import VisualProgramming from './VisualProgramming';
+import VoiceInput from './VoiceInput';
 
 const Workspace = ({ 
   onSubmit, 
@@ -18,7 +20,8 @@ const Workspace = ({
   appDescription, 
   setAppDescription,
   activeComponent,
-  currentStatus
+  currentStatus,
+  onFeedback
 }) => {
   const [activeTab, setActiveTab] = useState('codeEditor');
 
@@ -84,9 +87,11 @@ const Workspace = ({
               <TabsTrigger value="terminal"><Terminal className="mr-2 h-4 w-4" /> Terminal</TabsTrigger>
               <TabsTrigger value="planner"><Columns className="mr-2 h-4 w-4" /> Planner</TabsTrigger>
               <TabsTrigger value="browser"><Globe className="mr-2 h-4 w-4" /> Browser</TabsTrigger>
+              <TabsTrigger value="visualProgramming"><Code className="mr-2 h-4 w-4" /> Visual Programming</TabsTrigger>
+              <TabsTrigger value="voiceInput"><Mic className="mr-2 h-4 w-4" /> Voice Input</TabsTrigger>
             </TabsList>
             <TabsContent value="codeEditor">
-              <CodeEditor codebase={codebase} />
+              <CodeEditor codebase={codebase} onFeedback={onFeedback} />
             </TabsContent>
             <TabsContent value="terminal">
               <TerminalComponent />
@@ -96,6 +101,12 @@ const Workspace = ({
             </TabsContent>
             <TabsContent value="browser">
               <BrowserPreview codebase={codebase} />
+            </TabsContent>
+            <TabsContent value="visualProgramming">
+              <VisualProgramming onUpdate={(newStructure) => onFeedback(newStructure)} />
+            </TabsContent>
+            <TabsContent value="voiceInput">
+              <VoiceInput onTranscript={(transcript) => onFeedback(transcript)} />
             </TabsContent>
           </Tabs>
         </div>
