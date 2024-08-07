@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 const SettingsMenu = ({ onSave }) => {
   const [apiKey, setApiKey] = useState('');
   const [endpoint, setEndpoint] = useState('');
   const [models, setModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState('');
+  const [showApiKey, setShowApiKey] = useState(false);
 
   useEffect(() => {
     const fetchModels = async () => {
@@ -38,7 +40,19 @@ const SettingsMenu = ({ onSave }) => {
     <div className="space-y-4">
       <div>
         <Label htmlFor="api-key">API Key</Label>
-        <Input id="api-key" type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+        <div className="flex items-center space-x-2">
+          <Input
+            id="api-key"
+            type={showApiKey ? "text" : "password"}
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+          />
+          <Switch
+            checked={showApiKey}
+            onCheckedChange={setShowApiKey}
+            aria-label="Toggle API key visibility"
+          />
+        </div>
       </div>
       <div>
         <Label htmlFor="endpoint">Endpoint</Label>
