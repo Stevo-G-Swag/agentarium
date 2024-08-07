@@ -8,8 +8,9 @@ const VoiceInput = ({ onTranscript }) => {
   const [recognition, setRecognition] = useState(null);
 
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window) {
-      const newRecognition = new window.webkitSpeechRecognition();
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const newRecognition = new SpeechRecognition();
       newRecognition.continuous = true;
       newRecognition.interimResults = true;
 
