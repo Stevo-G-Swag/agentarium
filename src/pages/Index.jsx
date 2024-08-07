@@ -75,18 +75,6 @@ const Index = () => {
     }
   };
 
-  const handleFeedback = (feedback) => {
-    console.log('User feedback:', feedback);
-    if (erebusAgent) {
-      erebusAgent.learn(feedback);
-    }
-  };
-
-  const handleSaveSettings = (newSettings) => {
-    setSettings(newSettings);
-    setShowSettings(false);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white">
       <AnimatePresence mode="wait">
