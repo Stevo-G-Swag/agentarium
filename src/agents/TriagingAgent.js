@@ -1,18 +1,33 @@
+import OpenAI from 'openai';
+
 class TriagingAgent {
-  process(query) {
-    const tasks = this.identifyTasks(query);
+  constructor(apiKey, model) {
+    this.openai = new OpenAI({ apiKey });
+    this.model = model;
+  }
+
+  async process(query) {
+    const response = await this.openai.chat.completions.create({
+      model: this.model,
+      messages: [
+        { role: 'system', content: 'You are a triaging agent that identifies tasks in user queries.' },
+        { role: 'user', content: query }
+      ],
+    });
+
+    const tasks = this.identifyTasks(response.choices[0].message.content);
     return this.delegateTasks(tasks);
   }
 
-  identifyTasks(query) {
+  identifyTasks(content) {
     const tasks = [];
-    if (query.toLowerCase().includes('frontend') || query.toLowerCase().includes('ui')) {
+    if (content.toLowerCase().includes('frontend') || content.toLowerCase().includes('ui')) {
       tasks.push('frontend');
     }
-    if (query.toLowerCase().includes('backend') || query.toLowerCase().includes('api')) {
+    if (content.toLowerCase().includes('backend') || content.toLowerCase().includes('api')) {
       tasks.push('backend');
     }
-    if (query.toLowerCase().includes('test')) {
+    if (content.toLowerCase().includes('test')) {
       tasks.push('testing');
     }
     return tasks;
