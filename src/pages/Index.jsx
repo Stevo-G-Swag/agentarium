@@ -144,37 +144,37 @@ const Index = () => {
                     </TabsList>
                     <TabsContent value="codeEditor">
                       <Workspace
-                        activeComponent={activeComponent}
+                        activeComponent="codeEditor"
                         codebase={codebase}
-                        onFeedback={handleFeedback}
+                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
                       />
                     </TabsContent>
                     <TabsContent value="terminal">
                       <Workspace
-                        activeComponent={activeComponent}
+                        activeComponent="terminal"
                         codebase={codebase}
-                        onFeedback={handleFeedback}
+                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
                       />
                     </TabsContent>
                     <TabsContent value="planner">
                       <Workspace
-                        activeComponent={activeComponent}
+                        activeComponent="planner"
                         codebase={codebase}
-                        onFeedback={handleFeedback}
+                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
                       />
                     </TabsContent>
                     <TabsContent value="browser">
                       <Workspace
-                        activeComponent={activeComponent}
+                        activeComponent="browser"
                         codebase={codebase}
-                        onFeedback={handleFeedback}
+                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
                       />
                     </TabsContent>
                     <TabsContent value="voiceInput">
                       <Workspace
-                        activeComponent={activeComponent}
+                        activeComponent="voiceInput"
                         codebase={codebase}
-                        onFeedback={handleFeedback}
+                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
                       />
                     </TabsContent>
                   </Tabs>
