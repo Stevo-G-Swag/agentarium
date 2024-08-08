@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ErrorBoundary from "./components/ErrorBoundary";
 import { toast } from "sonner";
 
 const queryClient = new QueryClient({
