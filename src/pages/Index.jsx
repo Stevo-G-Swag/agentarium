@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 const Index = () => {
   const [result, setResult] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [settings, setSettings] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -21,6 +21,15 @@ const Index = () => {
   const [appDescription, setAppDescription] = useState('');
   const [activeComponent, setActiveComponent] = useState('codeEditor');
   const [currentStatus, setCurrentStatus] = useState('');
+
+  useEffect(() => {
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (name, description) => {
     setIsLoading(true);
@@ -47,6 +56,20 @@ const Index = () => {
     setShowSettings(false);
     toast.success('Settings saved successfully');
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="text-2xl font-bold">Loading CodeGenie AI...</div>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
