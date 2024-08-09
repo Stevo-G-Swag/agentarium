@@ -17,3 +17,4 @@ export { default as SpecificationWriterAgent } from './SpecificationWriterAgent'
 export { default as TechLeadAgent } from './TechLeadAgent';
 export { default as TechnicalWriterAgent } from './TechnicalWriterAgent';
 export { default as TroubleshooterAgent } from './TroubleshooterAgent';
+export { default as CodeReviewAgent } from './CodeReviewAgent'; // Import the new agent
