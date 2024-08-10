@@ -47,6 +47,18 @@ const Index = () => {
         console.error('Error in erebusAgent.process:', processError);
         throw new Error('Failed to process the request. Please try again.');
       }
+      console.log('Starting handleSubmit with:', { name, description });
+      const updateCallback = (component, status) => {
+        setActiveComponent(component);
+        setCurrentStatus(status);
+      };
+      let agentResult;
+      try {
+        agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
+      } catch (processError) {
+        console.error('Error in erebusAgent.process:', processError);
+        throw new Error('Failed to process the request. Please try again.');
+      }
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase || {});
 >>>>>>> refs/remotes/origin/main
