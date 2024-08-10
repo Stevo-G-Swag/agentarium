@@ -64,7 +64,13 @@ const Index = () => {
         setActiveComponent(component);
         setCurrentStatus(status);
       };
-      const agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
+      let agentResult;
+      try {
+        agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
+      } catch (processError) {
+        console.error('Error in erebusAgent.process:', processError);
+        throw new Error('Failed to process the request. Please try again.');
+      }
       setResult(JSON.stringify(agentResult, null, 2));
       setCodebase(agentResult.codebase || {});
 >>>>>>> refs/remotes/origin/main
@@ -75,10 +81,12 @@ const Index = () => {
         if (err.stack) {
           console.error('Error stack:', err.stack);
         }
-        // Check if err has a 'frame' property before accessing it
-        if (err.frame) {
-          console.error('Error frame:', err.frame);
-        }
+        // Safely log any additional properties of the error object
+        Object.keys(err).forEach(key => {
+          if (key !== 'message' && key !== 'stack') {
+            console.error(`Error ${key}:`, err[key]);
+          }
+        });
       }
       setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
