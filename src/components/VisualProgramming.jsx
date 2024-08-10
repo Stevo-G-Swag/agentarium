@@ -1,55 +1,68 @@
 import React, { useState } from 'react';
-import ReactFlow, { Handle, Position } from 'react-flow-renderer';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
-const initialElements = [
-  {
-    id: '1',
-    type: 'input',
-     { label: 'Input Node' },
-    position: { x: 100, y: 100 },
-  },
-  {
-    id: '2',
-    type: 'output',
-     { label: 'Output Node' },
-    position: { x: 300, y: 100 },
-  },
-];
-
-const VisualProgramming = () => {
-  const [elements, setElements] = useState(initialElements);
-
-  const onConnect = (params) => setElements((els) => ReactFlow.addEdge(params, els));
+const DraggableComponent = ({ id, type, onDrop }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'component',
+    item: { id, type },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   return (
-    <div style={{ height: 500 }}>
-      <ReactFlow
-        elements={elements}
-        onConnect={onConnect}
-        nodeTypes={{
-          input: CustomInputNode,
-          output: CustomOutputNode,
-        }}
-      />
+    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      {type}
     </div>
   );
 };
 
-const CustomInputNode = ({ data }) => {
+const DropZone = ({ onDrop }) => {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'component',
+    drop: (item) => onDrop(item),
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }));
+
   return (
-    <div className="bg-blue-500 text-white p-2 rounded">
-      <Handle type="source" position={Position.Right} id="a" />
-      {data.label}
+    <div ref={drop} style={{ minHeight: '100px', border: '1px dashed gray', backgroundColor: isOver ? 'lightblue' : 'white' }}>
+      Drop components here
     </div>
   );
 };
 
-const CustomOutputNode = ({ data }) => {
+const VisualProgramming = ({ onUpdate }) => {
+  const [structure, setStructure] = useState([]);
+
+  const handleDrop = (item) => {
+    setStructure([...structure, item]);
+    onUpdate([...structure, item]);
+  };
+
   return (
-    <div className="bg-green-500 text-white p-2 rounded">
-      <Handle type="target" position={Position.Left} id="b" />
-      {data.label}
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex flex-col md:flex-row">
+        <div className="w-full md:w-1/4 p-4">
+          <h3 className="mb-4">Components</h3>
+          <div className="flex flex-wrap gap-2">
+            <DraggableComponent id="1" type="Button" />
+            <DraggableComponent id="2" type="Input" />
+            <DraggableComponent id="3" type="Form" />
+          </div>
+        </div>
+        <div className="w-full md:w-3/4 p-4">
+          <h3 className="mb-4">Canvas</h3>
+          <DropZone onDrop={handleDrop} />
+          <div className="mt-4">
+            <h4>Structure:</h4>
+            <pre className="whitespace-pre-wrap break-words">{JSON.stringify(structure, null, 2)}</pre>
+          </div>
+        </div>
+      </div>
+    </DndProvider>
   );
 };
 
