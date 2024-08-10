@@ -9,8 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ErebusAgent } from '../agents/ErebusAgent'; // Import ErebusAgent
-import sharedEnv from './environment'; // Import the shared environment
 
 const Index = () => {
   const [result, setResult] = useState('');
@@ -40,24 +38,21 @@ const Index = () => {
     setError(null);
     setCurrentStatus(''); // Clear previous status
 
-    try {
-<<<<<<< HEAD
-      // Initialize ErebusAgent with your API key and desired model
-      const erebus = new ErebusAgent(sharedEnv.apiKey, 'gpt-3.5-turbo'); 
-
-      // Start the app creation process
-      const appData = await erebus.process(
-        name,
-        description,
-        (step, message) => {
-          console.log(`${step}: ${message}`);
-          setCurrentStatus(message); // Update the status message
-        },
-        'User feedback here' // Replace with actual user feedback
-      );
-
-      setResult(`App "${name}" creation process completed.`);
-      setCodebase(appData.codebase);
+      console.log('Starting handleSubmit with:', { name, description });
+      const updateCallback = (component, status) => {
+        setActiveComponent(component);
+        setCurrentStatus(status);
+      };
+      let agentResult;
+      try {
+        agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
+      } catch (processError) {
+        console.error('Error in erebusAgent.process:', processError);
+        throw new Error('Failed to process the request. Please try again.');
+      }
+      setResult(JSON.stringify(agentResult, null, 2));
+      setCodebase(agentResult.codebase || {});
+>>>>>>> refs/remotes/origin/main
 =======
       console.log('Starting handleSubmit with:', { name, description });
       const updateCallback = (component, status) => {
