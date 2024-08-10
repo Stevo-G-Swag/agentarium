@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
 import * as agents from '.';
-// Remove or comment out the import for now
-// import * as tools from '../components/tools';
+import * as tools from '../components/tools';
 
 export class ErebusAgent {
   constructor(apiKey, model) {
@@ -12,8 +11,7 @@ export class ErebusAgent {
       acc[name] = new Agent(this.openai, this.model);
       return acc;
     }, {});
-    // Comment out or remove the tools assignment
-    // this.tools = tools;
+    this.tools = tools;
     this.prompts = this.loadPrompts();
     this.feedback = [];
     this.sandbox = null;
@@ -114,8 +112,7 @@ export class ErebusAgent {
     for (const [filename, content] of Object.entries(changes)) {
       this.codebase[filename] = content;
     }
-    // Remove references to this.tools
-    // this.tools.codeEditor.updateCode(changes);
-    // this.tools.browserPreview.update(this.codebase);
+    this.tools.codeEditor.updateCode(changes);
+    this.tools.browserPreview.update(this.codebase);
   }
 }
