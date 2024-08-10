@@ -10,6 +10,7 @@ import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { toast } from "sonner";
+import sharedEnv, { initEnvironment } from './environment'; // Import the shared environment
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,9 @@ const App = () => {
     if (storedDarkMode) {
       setDarkMode(JSON.parse(storedDarkMode));
     }
+
+    // Initialize the environment (replace with your actual config)
+    initEnvironment({ apiKey: 'your_api_key' });
   }, []);
 
   const handleLogin = (userData) => {
