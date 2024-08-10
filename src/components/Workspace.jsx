@@ -7,21 +7,12 @@ import BrowserPreview from './BrowserPreview';
 import VoiceInput from './VoiceInput';
 
 const Workspace = ({ activeComponent, codebase, onFeedback }) => {
-  const renderComponent = () => {
-    switch (activeComponent) {
-      case 'codeEditor':
-        return <CodeEditor codebase={codebase} onFeedback={onFeedback} />;
-      case 'terminal':
-        return <TerminalComponent />;
-      case 'planner':
-        return <Planner />;
-      case 'browser':
-        return <BrowserPreview codebase={codebase || {}} />;
-      case 'voiceInput':
-        return <VoiceInput onTranscript={onFeedback} />;
-      default:
-        return <div>No component selected</div>;
-    }
+  const componentMap = {
+    codeEditor: <CodeEditor codebase={codebase} onFeedback={onFeedback} />,
+    terminal: <TerminalComponent />,
+    planner: <Planner />,
+    browser: <BrowserPreview codebase={codebase || {}} />,
+    voiceInput: <VoiceInput onTranscript={onFeedback} />,
   };
 
   return (
@@ -31,7 +22,7 @@ const Workspace = ({ activeComponent, codebase, onFeedback }) => {
       transition={{ duration: 0.3 }}
       className="h-[500px] overflow-auto"
     >
-      {renderComponent()}
+      {componentMap[activeComponent]}
     </motion.div>
   );
 };

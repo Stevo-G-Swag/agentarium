@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ErrorBoundary from "./components/ErrorBoundary";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { toast } from "sonner";
-import sharedEnv, { initEnvironment } from './environment'; // Import the shared environment
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,9 +60,6 @@ const App = () => {
     if (storedDarkMode) {
       setDarkMode(JSON.parse(storedDarkMode));
     }
-
-    // Initialize the environment (replace with your actual config)
-    initEnvironment({ apiKey: 'your_api_key' });
   }, []);
 
   const handleLogin = (userData) => {
@@ -90,7 +86,6 @@ const App = () => {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <ErrorBoundary>
           <Toaster />
           <BrowserRouter>
             <div className={darkMode ? 'dark' : ''}>
@@ -104,7 +99,6 @@ const App = () => {
               </Routes>
             </div>
           </BrowserRouter>
-          </ErrorBoundary>
         </TooltipProvider>
       </QueryClientProvider>
     </ErrorBoundary>

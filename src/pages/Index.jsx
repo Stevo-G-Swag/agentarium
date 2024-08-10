@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, ArrowLeft, Code, Terminal, Layout, Globe, Mic } from "lucide-react"
 import { toast } from "sonner"
-import ErrorBoundary from '../components/ErrorBoundary';
+import { ErebusAgent } from '../agents/ErebusAgent';
 import Workspace from '../components/Workspace';
 import SettingsMenu from '../components/SettingsMenu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -12,10 +12,11 @@ import { Textarea } from "@/components/ui/textarea"
 
 const Index = () => {
   const [result, setResult] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [settings, setSettings] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [erebusAgent, setErebusAgent] = useState(null);
   const [codebase, setCodebase] = useState({});
   const [appName, setAppName] = useState('');
   const [appDescription, setAppDescription] = useState('');
@@ -23,58 +24,76 @@ const Index = () => {
   const [currentStatus, setCurrentStatus] = useState('');
 
   useEffect(() => {
-    // Simulate initial loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    if (settings) {
+      setErebusAgent(new ErebusAgent(settings.apiKey, settings.model));
+    }
+  }, [settings]);
 
   const handleSubmit = async (name, description) => {
+    if (!erebusAgent) {
+      setError('Please configure the settings first.');
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
-      // Simulating API call or processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setResult(`App "${name}" created successfully!\nDescription: ${description}`);
-      setCodebase({
-        'index.html': '<h1>Hello, World!</h1>',
-        'styles.css': 'body { font-family: Arial, sans-serif; }',
-        'script.js': 'console.log("App initialized");'
-      });
+      console.log('Starting handleSubmit with:', { name, description });
+      const updateCallback = (component, status) => {
+        setActiveComponent(component);
+        setCurrentStatus(status);
+      };
+      const agentResult = await erebusAgent.process(name, description, updateCallback, handleFeedback);
+      setResult(JSON.stringify(agentResult, null, 2));
+      setCodebase(agentResult.codebase || {});
     } catch (err) {
-      setError('Failed to create app. Please try again.');
+      let errorMessage = 'An unknown error occurred';
+      if (err && typeof err === 'object') {
+        errorMessage = err.message || errorMessage;
+        if (err.stack) {
+          console.error('Error stack:', err.stack);
+        }
+        // Check if err has a 'frame' property before accessing it
+        // Remove the check for err.frame
+        console.error('Full error object:', err);
+      }
+      setError(`Error: ${errorMessage}. Please try again or contact support if the issue persists.`);
       console.error('Error in handleSubmit:', err);
+      toast.error(`Failed to process the request. Please check your inputs and try again.`);
+      setCurrentStatus('Error: Unable to complete the process. Please try again.');
+      setCodebase({});
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSaveSettings = (newSettings) => {
-    setSettings(newSettings);
-    setShowSettings(false);
-    toast.success('Settings saved successfully');
+  const handleFeedback = (feedback) => {
+    try {
+      console.log('User feedback:', feedback);
+      if (erebusAgent) {
+        erebusAgent.learn(feedback);
+      }
+    } catch (error) {
+      console.error('Error in handleFeedback:', error);
+      toast.error('Failed to process feedback. Please try again later.');
+    }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="text-2xl font-bold">Loading CodeGenie AI...</div>
-        </motion.div>
-      </div>
-    );
-  }
+  const handleSaveSettings = (newSettings) => {
+    try {
+      setSettings(newSettings);
+      setShowSettings(false);
+      toast('Settings saved successfully', {
+        type: 'success',
+      });
+    } catch (error) {
+      console.error('Error in handleSaveSettings:', error);
+      toast.error('Failed to save settings. Please try again.');
+    }
+  };
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6">
-        <AnimatePresence mode="wait">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white">
+      <AnimatePresence mode="wait">
         {showSettings ? (
           <motion.div
             key="settings"
@@ -144,37 +163,37 @@ const Index = () => {
                     </TabsList>
                     <TabsContent value="codeEditor">
                       <Workspace
-                        activeComponent="codeEditor"
+                        activeComponent={activeComponent}
                         codebase={codebase}
-                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
+                        onFeedback={handleFeedback}
                       />
                     </TabsContent>
                     <TabsContent value="terminal">
                       <Workspace
-                        activeComponent="terminal"
+                        activeComponent={activeComponent}
                         codebase={codebase}
-                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
+                        onFeedback={handleFeedback}
                       />
                     </TabsContent>
                     <TabsContent value="planner">
                       <Workspace
-                        activeComponent="planner"
+                        activeComponent={activeComponent}
                         codebase={codebase}
-                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
+                        onFeedback={handleFeedback}
                       />
                     </TabsContent>
                     <TabsContent value="browser">
                       <Workspace
-                        activeComponent="browser"
+                        activeComponent={activeComponent}
                         codebase={codebase}
-                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
+                        onFeedback={handleFeedback}
                       />
                     </TabsContent>
                     <TabsContent value="voiceInput">
                       <Workspace
-                        activeComponent="voiceInput"
+                        activeComponent={activeComponent}
                         codebase={codebase}
-                        onFeedback={(feedback) => console.log('Feedback:', feedback)}
+                        onFeedback={handleFeedback}
                       />
                     </TabsContent>
                   </Tabs>
@@ -197,9 +216,8 @@ const Index = () => {
         whileTap={{ scale: 0.9 }}
       >
         {showSettings ? <ArrowLeft size={24} /> : <Settings size={24} />}
-        </motion.button>
-      </div>
-    </ErrorBoundary>
+      </motion.button>
+    </div>
   );
 };
 
