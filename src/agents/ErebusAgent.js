@@ -1,9 +1,6 @@
 import OpenAI from 'openai';
 import * as agents from '.';
-<<<<<<< HEAD
-=======
 import * as tools from '../components/tools';
->>>>>>> refs/remotes/origin/main
 
 export class ErebusAgent {
   constructor(apiKey, model) {
@@ -14,10 +11,7 @@ export class ErebusAgent {
       acc[name] = new Agent(this.openai, this.model);
       return acc;
     }, {});
-<<<<<<< HEAD
-=======
     this.tools = tools;
->>>>>>> refs/remotes/origin/main
     this.prompts = this.loadPrompts();
     this.feedback = [];
   }
@@ -117,10 +111,7 @@ export class ErebusAgent {
     for (const [filename, content] of Object.entries(changes)) {
       this.codebase[filename] = content;
     }
-<<<<<<< HEAD
-=======
     this.tools.codeEditor.updateCode(changes);
     this.tools.browserPreview.update(this.codebase);
->>>>>>> refs/remotes/origin/main
   }
 }
