@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
 import * as agents from '.';
-import * as tools from '../components/tools';
 
 export class ErebusAgent {
   constructor(apiKey, model) {
@@ -11,7 +10,6 @@ export class ErebusAgent {
       acc[name] = new Agent(this.openai, this.model);
       return acc;
     }, {});
-    this.tools = tools;
     this.prompts = this.loadPrompts();
     this.feedback = [];
   }
@@ -88,8 +86,6 @@ export class ErebusAgent {
         error: error.message,
         codebase: this.codebase,
       };
-    } finally {
-      // Cleanup code if needed
     }
   }
 
@@ -102,16 +98,12 @@ export class ErebusAgent {
   }
 
   async learn(feedback) {
-    // Implement adaptive learning based on user feedback
     console.log('Learning from feedback:', feedback);
-    // TODO: Implement actual learning logic
   }
 
   updateCodebase(changes) {
     for (const [filename, content] of Object.entries(changes)) {
       this.codebase[filename] = content;
     }
-    this.tools.codeEditor.updateCode(changes);
-    this.tools.browserPreview.update(this.codebase);
   }
 }
